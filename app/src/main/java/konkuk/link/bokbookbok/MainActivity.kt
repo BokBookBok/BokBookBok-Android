@@ -11,14 +11,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import konkuk.link.bokbookbok.ui.theme.BokBookBokTheme
+import konkuk.link.bokbookbok.ui.theme.BOKBOOKBOKTheme
+import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            BokBookBokTheme {
+            BOKBOOKBOKTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
                         name = "Android",
@@ -38,13 +39,19 @@ fun Greeting(
     Text(
         text = "Hello $name!",
         modifier = modifier,
+        color = bokBookBokColors.blue
+    )
+    Text(
+        text = "Hello $name!",
+        modifier = modifier,
+        color = bokBookBokColors.main
     )
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    BokBookBokTheme {
+    BOKBOOKBOKTheme {
         Greeting("Android")
     }
 }
