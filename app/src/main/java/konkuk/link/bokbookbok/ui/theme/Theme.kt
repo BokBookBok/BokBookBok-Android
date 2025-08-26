@@ -13,15 +13,21 @@ object BokBookBokTheme {
         @Composable
         @ReadOnlyComposable
         get() = LocalBokBookBokColors.current
+    val bokBookBokTypography: BokBookBokTypography
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalTypo.current
 }
 
 @Composable
 fun ProvideMementoColorsAndTypography(
     bokBookBokColors: BokBookBokColors,
+    bokBookBokTypography: BokBookBokTypography,
     content: @Composable () -> Unit,
 ) {
     CompositionLocalProvider(
         LocalBokBookBokColors provides bokBookBokColors,
+        LocalTypo provides bokBookBokTypography,
         content = content,
     )
 }
@@ -33,7 +39,8 @@ fun BOKBOOKBOKTheme(
     val bokBookBokColors = bokBookBokColors
 
     ProvideMementoColorsAndTypography(
-        bokBookBokColors = bokBookBokColors
+        bokBookBokColors = bokBookBokColors,
+        bokBookBokTypography = defaultBokBookBokTypography
     ) {
         val view = LocalView.current
         if (!view.isInEditMode) {
