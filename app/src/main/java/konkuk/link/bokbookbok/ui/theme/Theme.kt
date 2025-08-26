@@ -1,12 +1,9 @@
 package konkuk.link.bokbookbok.ui.theme
 
-import android.app.Activity
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.platform.LocalView
 
 object BokBookBokTheme {
     val bokBookBokColors: BokBookBokColors
@@ -42,12 +39,6 @@ fun BOKBOOKBOKTheme(
         bokBookBokColors = bokBookBokColors,
         bokBookBokTypography = defaultBokBookBokTypography
     ) {
-        val view = LocalView.current
-        if (!view.isInEditMode) {
-            SideEffect {
-                val window = (view.context as Activity).window
-            }
-        }
         MaterialTheme(content = content)
     }
 }

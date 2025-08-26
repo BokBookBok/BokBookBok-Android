@@ -38,30 +38,36 @@ val defaultBokBookBokTypography = BokBookBokTypography(
     logo = TextStyle(
         fontFamily = gmarketsans,
         fontSize = 30.sp,
+        lineHeightStyle = lineHeightStyle
     ),
     subLogo = TextStyle(
         fontFamily = tstjktb,
         fontSize = 20.sp,
+        lineHeightStyle = lineHeightStyle
     ),
     body = TextStyle(
         fontFamily = noonnnu,
         fontSize = 16.sp,
-        lineHeight = 24.sp
+        lineHeight = 24.sp,
+        lineHeightStyle = lineHeightStyle
     ),
     subBody = TextStyle(
         fontFamily = noonnnu,
         fontSize = 12.sp,
-        lineHeight = 20.sp
+        lineHeight = 20.sp,
+        lineHeightStyle = lineHeightStyle
     ),
     header = TextStyle(
         fontFamily = noonnnu,
         fontSize = 28.sp,
-        lineHeight = 30.sp
+        lineHeight = 30.sp,
+        lineHeightStyle = lineHeightStyle
     ),
     subHeader = TextStyle(
         fontFamily = noonnnu,
         fontSize = 20.sp,
-        lineHeight = 30.sp
+        lineHeight = 30.sp,
+        lineHeightStyle = lineHeightStyle
     ),
 )
 
