@@ -63,67 +63,68 @@ fun ReadingScreen(modifier: Modifier = Modifier) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.Bottom
+            verticalAlignment = Alignment.Bottom,
         ) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(5.dp)
+                verticalArrangement = Arrangement.spacedBy(5.dp),
             ) {
                 Text(
                     text = "이번주",
                     style = defaultBokBookBokTypography.subHeader,
-                    color = bokBookBokColors.fontLightGray
+                    color = bokBookBokColors.fontLightGray,
                 )
                 Text(
                     text = "선정도서",
                     style = defaultBokBookBokTypography.header,
-                    color = bokBookBokColors.fontDarkBrown
+                    color = bokBookBokColors.fontDarkBrown,
                 )
             }
             ReadingStatusButtonComponent(
                 status = currentStatus,
                 onClick = {
                     showModal = true
-                }
+                },
             )
         }
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(16.dp))
-                .drawBehind {
-                    drawRect(color = bokBookBokColors.backGroundBG)
-                    drawRect(brush = gradientBrush)
-                }
-                .padding(horizontal = 24.dp, vertical = 20.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .drawBehind {
+                        drawRect(color = bokBookBokColors.backGroundBG)
+                        drawRect(brush = gradientBrush)
+                    }.padding(horizontal = 24.dp, vertical = 20.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             WonGoJiBoard(text = "괭이부리말아이들")
             Text(
                 text = "김중미",
                 style = defaultBokBookBokTypography.body,
                 color = bokBookBokColors.fontLightGray,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
             // todo : 서버 uri로 AsyncImage로 바꿔야 함
             Box(
-                modifier = modifier
-                    .size(132.dp,196.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Color.LightGray),
-                contentAlignment = Alignment.Center
+                modifier =
+                    modifier
+                        .size(132.dp, 196.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Color.LightGray),
+                contentAlignment = Alignment.Center,
             ) {
                 Text(
                     text = "Image Area",
                     style = defaultBokBookBokTypography.body,
-                    color = Color.White
+                    color = Color.White,
                 )
             }
             Text(
                 text = "\"세상 모든 아이들이\n" + "동무가 되기를\"",
                 style = defaultBokBookBokTypography.body,
                 color = bokBookBokColors.fontDarkGray,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         }
         ReviewComponent(
@@ -133,34 +134,38 @@ fun ReadingScreen(modifier: Modifier = Modifier) {
         )
     }
     if (showModal) {
-        val modalContentData = when (currentStatus) {
-            ReadingStatus.BEFORE_READING -> ModalContentData(
-                title = "읽어보기",
-                message = "독서를\n시작하시겠습니까?",
-                primaryButtonText = "시작",
-                secondaryButtonText = "취소",
-                onPrimaryClick = {
-                    currentStatus = ReadingStatus.IN_PROGRESS
-                    showModal = false
-                }
-            )
-            ReadingStatus.IN_PROGRESS -> ModalContentData(
-                title = "독서 완료",
-                message = "독서를\n완료하시겠습니까?",
-                primaryButtonText = "완료",
-                secondaryButtonText = "취소",
-                onPrimaryClick = {
-                    currentStatus = ReadingStatus.COMPLETED
-                    showModal = false
-                },
-            )
-            ReadingStatus.COMPLETED,
-            ReadingStatus.REVIEWED,
-            is ReadingStatus.TOTAL_BOOKS_READ -> null
-        }
+        val modalContentData =
+            when (currentStatus) {
+                ReadingStatus.BEFORE_READING ->
+                    ModalContentData(
+                        title = "읽어보기",
+                        message = "독서를\n시작하시겠습니까?",
+                        primaryButtonText = "시작",
+                        secondaryButtonText = "취소",
+                        onPrimaryClick = {
+                            currentStatus = ReadingStatus.IN_PROGRESS
+                            showModal = false
+                        },
+                    )
+                ReadingStatus.IN_PROGRESS ->
+                    ModalContentData(
+                        title = "독서 완료",
+                        message = "독서를\n완료하시겠습니까?",
+                        primaryButtonText = "완료",
+                        secondaryButtonText = "취소",
+                        onPrimaryClick = {
+                            currentStatus = ReadingStatus.COMPLETED
+                            showModal = false
+                        },
+                    )
+                ReadingStatus.COMPLETED,
+                ReadingStatus.REVIEWED,
+                is ReadingStatus.TOTAL_BOOKS_READ,
+                -> null
+            }
 
         modalContentData?.let { data ->
-            ModalComponent (
+            ModalComponent(
                 onDismissRequest = { showModal = false },
                 primaryButtonText = data.primaryButtonText,
                 onPrimaryButtonClick = data.onPrimaryClick,

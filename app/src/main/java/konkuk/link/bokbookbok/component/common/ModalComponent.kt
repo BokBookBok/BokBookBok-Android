@@ -22,7 +22,7 @@ data class ModalContentData(
     val message: String,
     val primaryButtonText: String,
     val onPrimaryClick: () -> Unit,
-    val secondaryButtonText: String
+    val secondaryButtonText: String,
 )
 
 @Composable

@@ -33,6 +33,7 @@ class ReviewViewModelFactory(
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
+
 sealed interface ReviewPostState {
     object Idle : ReviewPostState
 
@@ -56,6 +57,7 @@ sealed interface VoteState {
         val message: String,
     ) : VoteState
 }
+
 data class ReviewScreenUiState(
     val reviewPostState: ReviewPostState = ReviewPostState.Idle,
     val voteState: VoteState = VoteState.Loading,

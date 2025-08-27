@@ -36,23 +36,24 @@ data class BookRecord(
     val date: String,
     val title: String,
     val imageUrl: String?,
-    val author: String
+    val author: String,
 )
 
 @Composable
 fun RecordScreen(modifier: Modifier = Modifier) {
     // todo : 실제 서버 데이터로 바꿀 것
-    val bookList = remember {
-        List(11) { i ->
-            BookRecord(
-                id = i,
-                date = "${8 - (i / 2)}월 첫째주",
-                title = listOf("여행의 이유", "아몬드", "불편한 편의점", "달러구트 꿈 백화점", "오래된 미래")[i % 5],
-                imageUrl = "https://image.aladin.co.kr/product/26/49/cover500/k552736024_1.jpg",
-                author = listOf("김영하", "손원평", "김호연", "이미예", "헬레나 노르베리호지")[i % 5]
-            )
+    val bookList =
+        remember {
+            List(11) { i ->
+                BookRecord(
+                    id = i,
+                    date = "${8 - (i / 2)}월 첫째주",
+                    title = listOf("여행의 이유", "아몬드", "불편한 편의점", "달러구트 꿈 백화점", "오래된 미래")[i % 5],
+                    imageUrl = "https://image.aladin.co.kr/product/26/49/cover500/k552736024_1.jpg",
+                    author = listOf("김영하", "손원평", "김호연", "이미예", "헬레나 노르베리호지")[i % 5],
+                )
+            }
         }
-    }
 
     var selectedBook by remember { mutableStateOf<BookRecord?>(null) }
 
@@ -77,20 +78,20 @@ fun RecordScreen(modifier: Modifier = Modifier) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.Bottom
+            verticalAlignment = Alignment.Bottom,
         ) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(5.dp)
+                verticalArrangement = Arrangement.spacedBy(5.dp),
             ) {
                 Text(
                     text = "지뿡이 님의",
                     style = defaultBokBookBokTypography.subHeader,
-                    color = bokBookBokColors.fontLightGray
+                    color = bokBookBokColors.fontLightGray,
                 )
                 Text(
                     text = "책, 책, 책",
                     style = defaultBokBookBokTypography.header,
-                    color = bokBookBokColors.fontDarkBrown
+                    color = bokBookBokColors.fontDarkBrown,
                 )
             }
             // todo : 머지하고 주석 풀 것
@@ -101,22 +102,23 @@ fun RecordScreen(modifier: Modifier = Modifier) {
         }
 
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .border(width = 0.5.dp, color = bokBookBokColors.borderLightGray, shape = RoundedCornerShape(16.dp))
-                .clip(RoundedCornerShape(16.dp))
-                .drawBehind {
-                    drawRect(color = bokBookBokColors.backGroundBG)
-                    drawRect(brush = gradientBrush)
-                }
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .border(width = 0.5.dp, color = bokBookBokColors.borderLightGray, shape = RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
+                    .drawBehind {
+                        drawRect(color = bokBookBokColors.backGroundBG)
+                        drawRect(brush = gradientBrush)
+                    },
         ) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(24.dp),
                 horizontalArrangement = Arrangement.spacedBy(20.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
+                verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
                 items(bookList, key = { it.id }) { book ->
                     RecordBookComponent(
@@ -126,7 +128,7 @@ fun RecordScreen(modifier: Modifier = Modifier) {
                         author = book.author,
                         onClick = {
                             selectedBook = book
-                        }
+                        },
                     )
                 }
             }
@@ -138,12 +140,12 @@ fun RecordScreen(modifier: Modifier = Modifier) {
             primaryButtonText = "감상평",
             onPrimaryButtonClick = { selectedBook = null },
             secondaryButtonText = "닫기",
-            onSecondaryButtonClick = { selectedBook = null }
+            onSecondaryButtonClick = { selectedBook = null },
         ) { modifier ->
             Column(
                 modifier = modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 // todo : 실제 독서시간과 해당 컴포넌트로 바꿀 것
             }
