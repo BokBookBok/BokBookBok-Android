@@ -10,13 +10,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import konkuk.link.bokbookbok.screen.auth.DuplicateCheckState
 
-private fun getButtonState(state: DuplicateCheckState): Pair<String, AuthButtonTypeEnum> {
-    return when (state) {
+private fun getButtonState(state: DuplicateCheckState): Pair<String, AuthButtonTypeEnum> =
+    when (state) {
         DuplicateCheckState.SUCCESS -> "사용가능" to AuthButtonTypeEnum.SUCCESS
         DuplicateCheckState.FAILURE -> "사용불가" to AuthButtonTypeEnum.FAIL
         DuplicateCheckState.IDLE -> "중복확인" to AuthButtonTypeEnum.BEFORE
     }
-}
 
 @Composable
 fun DuplicateCheckInputComponent(
@@ -25,9 +24,9 @@ fun DuplicateCheckInputComponent(
     placeholder: String,
     checkState: DuplicateCheckState,
     onCheckClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    Row (
+    Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {

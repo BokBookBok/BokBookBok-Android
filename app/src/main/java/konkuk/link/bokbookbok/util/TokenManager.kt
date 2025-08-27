@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 
 object TokenManager {
-
     private const val PREFS_NAME = "auth_prefs"
     private const val KEY_ACCESS_TOKEN = "access_token"
 
@@ -21,9 +20,7 @@ object TokenManager {
         }
     }
 
-    fun getAccessToken(): String? {
-        return sharedPreferences.getString(KEY_ACCESS_TOKEN, null)
-    }
+    fun getAccessToken(): String? = sharedPreferences.getString(KEY_ACCESS_TOKEN, null)
 
     fun clearAccessToken() {
         sharedPreferences.edit {

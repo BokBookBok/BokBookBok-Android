@@ -62,7 +62,7 @@ fun LoginScreen(
             { showEmailFormatAlert = false },
             title = "알림",
             text = "올바른 이메일 형식이 아닙니다.",
-            confirmButtonText = "확인"
+            confirmButtonText = "확인",
         )
     }
 
@@ -113,7 +113,7 @@ fun LoginScreen(
                 text = message,
                 color = bokBookBokColors.second, // 에러를 나타내는 색상
                 style = defaultBokBookBokTypography.subBody,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
         }
 
@@ -123,7 +123,7 @@ fun LoginScreen(
             buttonText = "로그인",
             buttonType = ButtonTypeEnum.FILL,
             onClick = {
-                val request = LoginRequest(emailValue,  passwordValue)
+                val request = LoginRequest(emailValue, passwordValue)
                 viewModel.login(request)
             },
         )

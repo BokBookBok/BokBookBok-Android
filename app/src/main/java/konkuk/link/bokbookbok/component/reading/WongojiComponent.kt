@@ -24,18 +24,19 @@ import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
 @Composable
 private fun WonGoJiCell(
     char: Char?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
-            .size(34.dp),
-        contentAlignment = Alignment.Center
+        modifier =
+            modifier
+                .size(34.dp),
+        contentAlignment = Alignment.Center,
     ) {
         Text(
             text = char?.toString() ?: "",
             textAlign = TextAlign.Center,
             style = defaultBokBookBokTypography.subLogo,
-            color = bokBookBokColors.fontDarkBrown
+            color = bokBookBokColors.fontDarkBrown,
         )
     }
 }
@@ -43,30 +44,31 @@ private fun WonGoJiCell(
 @Composable
 fun WonGoJiRow(
     text: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val borderColor = bokBookBokColors.second
     Column(modifier = modifier) {
         Row(
-            modifier = Modifier.drawBehind() {
-                val cellWidth = size.width / 8
-                val strokeWidth = 1.dp.toPx()
-                for (i in 1 until 8) {
-                    val x = cellWidth * i
-                    drawLine(
-                        color = borderColor,
-                        start = Offset(x, 0f),
-                        end = Offset(x, size.height),
-                        strokeWidth = strokeWidth
-                    )
-                    drawLine(
-                        color = borderColor,
-                        start = Offset(0f, size.height),
-                        end = Offset(size.width, size.height),
-                        strokeWidth = strokeWidth
-                    )
-                }
-            }
+            modifier =
+                Modifier.drawBehind {
+                    val cellWidth = size.width / 8
+                    val strokeWidth = 1.dp.toPx()
+                    for (i in 1 until 8) {
+                        val x = cellWidth * i
+                        drawLine(
+                            color = borderColor,
+                            start = Offset(x, 0f),
+                            end = Offset(x, size.height),
+                            strokeWidth = strokeWidth,
+                        )
+                        drawLine(
+                            color = borderColor,
+                            start = Offset(0f, size.height),
+                            end = Offset(size.width, size.height),
+                            strokeWidth = strokeWidth,
+                        )
+                    }
+                },
         ) {
             for (i in 0 until 8) {
                 val char = text.getOrNull(i)
@@ -80,16 +82,18 @@ fun WonGoJiRow(
 @Composable
 fun WonGoJiBoard(
     text: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    val processedLines = remember(text) {
-        processTextForWonGoJi(text)
-    }
+    val processedLines =
+        remember(text) {
+            processTextForWonGoJi(text)
+        }
 
     Column(
-        modifier = modifier
-            .background(bokBookBokColors.white)
-            .border(width = 2.dp, color = bokBookBokColors.second)
+        modifier =
+            modifier
+                .background(bokBookBokColors.white)
+                .border(width = 2.dp, color = bokBookBokColors.second),
     ) {
         processedLines.forEachIndexed { index, line ->
             WonGoJiRow(text = line)
@@ -97,7 +101,7 @@ fun WonGoJiBoard(
             if (index < processedLines.size - 1) {
                 HorizontalDivider(
                     thickness = 1.dp,
-                    color = bokBookBokColors.second
+                    color = bokBookBokColors.second,
                 )
             }
         }

@@ -12,7 +12,7 @@ fun AlertComponent(
     onDismissRequest: () -> Unit,
     title: String,
     text: String,
-    confirmButtonText: String
+    confirmButtonText: String,
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -20,27 +20,27 @@ fun AlertComponent(
             Text(
                 text = title,
                 style = defaultBokBookBokTypography.subHeader,
-                color = bokBookBokColors.second
+                color = bokBookBokColors.second,
             )
         },
         text = {
             Text(
                 text = text,
                 style = defaultBokBookBokTypography.body,
-                color = bokBookBokColors.fontLightGray
+                color = bokBookBokColors.fontLightGray,
             )
         },
         confirmButton = {
             TextButton(
-                onClick = onDismissRequest
+                onClick = onDismissRequest,
             ) {
                 Text(
                     text = confirmButtonText,
                     style = defaultBokBookBokTypography.body,
-                    color = bokBookBokColors.second
+                    color = bokBookBokColors.second,
                 )
             }
         },
-        containerColor = bokBookBokColors.white
+        containerColor = bokBookBokColors.white,
     )
 }

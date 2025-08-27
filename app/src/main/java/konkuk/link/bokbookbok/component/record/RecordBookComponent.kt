@@ -29,20 +29,22 @@ fun RecordBookComponent(
     bookImageUrl: String?,
     author: String,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(space = 2.dp, alignment = Alignment.Top),
         horizontalAlignment = Alignment.Start,
-        modifier = modifier
-            .wrapContentHeight()
-            .width(116.dp)
-            .clickable(onClick = onClick),
+        modifier =
+            modifier
+                .wrapContentHeight()
+                .width(116.dp)
+                .clickable(onClick = onClick),
     ) {
         Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 2.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 2.dp),
             text = date,
             style = defaultBokBookBokTypography.subBody,
             color = bokBookBokColors.second,
@@ -52,16 +54,18 @@ fun RecordBookComponent(
         AsyncImage(
             model = bookImageUrl,
             contentDescription = "$title book cover",
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(158.dp)
-                .clip(RoundedCornerShape(4.dp)),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(158.dp)
+                    .clip(RoundedCornerShape(4.dp)),
             contentScale = ContentScale.Crop,
         )
         Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 4.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp),
             text = title,
             style = defaultBokBookBokTypography.body,
             color = bokBookBokColors.fontDarkBrown,
