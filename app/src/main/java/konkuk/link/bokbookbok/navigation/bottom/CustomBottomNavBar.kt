@@ -1,7 +1,6 @@
 package konkuk.link.bokbookbok.navigation.bottom
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,18 +26,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
+import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
+import konkuk.link.bokbookbok.util.topSemiCircleShadow
 
 @Composable
 fun CustomBottomNavBar(navController: NavController) {
@@ -66,8 +64,8 @@ fun CustomBottomNavBar(navController: NavController) {
                     .height(64.dp)
                     .align(Alignment.BottomCenter),
             shape = RoundedCornerShape(5.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White), // Todo: 북북북 색으로 변경
+            elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
+            colors = CardDefaults.cardColors(containerColor = bokBookBokColors.white),
         ) {
             Row(
                 modifier = Modifier.fillMaxSize(),
@@ -88,9 +86,8 @@ fun CustomBottomNavBar(navController: NavController) {
                             Spacer(modifier = Modifier.height(24.dp))
                             Text(
                                 text = item.title,
-                                fontSize = 12.sp,
-                                color = if (currentRoute == item.route) Color(0xFFD18A8A) else Color.Gray,
-                                fontWeight = if (currentRoute == item.route) FontWeight.Bold else FontWeight.Normal,
+                                style = defaultBokBookBokTypography.subBody,
+                                color = if (currentRoute == item.route) bokBookBokColors.fontDarkBrown else Color.Gray,
                             )
                         }
                     } else {
@@ -108,24 +105,21 @@ fun CustomBottomNavBar(navController: NavController) {
         Box(
             modifier =
                 Modifier
-                    .size(68.dp)
-                    .offset(y = (-8).dp) // Y축으로 -8dp 만큼 위로 이동
-                    .shadow(elevation = 4.dp, shape = CircleShape)
+                    .offset(y = (-8).dp)
+                    .topSemiCircleShadow(elevation = 8.dp)
+                    .background(color = bokBookBokColors.white, shape = CircleShape)
                     .clip(CircleShape)
-                    .background(
-                        brush =
-                            Brush.verticalGradient(
-                                colors = listOf(Color(0xFFFFF3E0), Color.White),
-                            ),
-                    ).border(width = 1.dp, color = Color.White.copy(alpha = 0.8f), shape = CircleShape)
                     .clickable { navigateTo(navController, BottomNavItem.Reading.route) },
             contentAlignment = Alignment.Center,
         ) {
             Icon(
                 painter = painterResource(id = BottomNavItem.Reading.icon),
                 contentDescription = BottomNavItem.Reading.title,
-                modifier = Modifier.size(32.dp),
-                tint = Color(0xFFD18A8A), // 아이콘 색상 고정
+                modifier =
+                    Modifier
+                        .padding(10.dp)
+                        .size(48.dp),
+                tint = Color.Unspecified,
             )
         }
     }
@@ -137,7 +131,7 @@ fun RowScope.StandardNavItem(
     isSelected: Boolean,
     onClick: () -> Unit,
 ) {
-    val contentColor = if (isSelected) Color(0xFF4C4C4C) else Color.Gray
+    val contentColor = if (isSelected) bokBookBokColors.fontDarkBrown else Color.Gray
     val icon = if (isSelected) item.icon else item.icon
 
     Column(
@@ -152,15 +146,17 @@ fun RowScope.StandardNavItem(
         Icon(
             painter = painterResource(id = icon),
             contentDescription = item.title,
-            modifier = Modifier.size(24.dp),
+            modifier =
+                Modifier
+                    .padding(top = 10.dp, start = 20.dp, end = 20.dp)
+                    .size(24.dp),
             tint = contentColor,
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = item.title,
-            fontSize = 12.sp,
+            style = defaultBokBookBokTypography.subBody,
             color = contentColor,
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
         )
     }
 }

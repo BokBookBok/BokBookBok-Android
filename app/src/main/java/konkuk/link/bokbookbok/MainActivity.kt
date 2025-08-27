@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import konkuk.link.bokbookbok.screen.MainScreen
 import konkuk.link.bokbookbok.ui.theme.BOKBOOKBOKTheme
-import konkuk.link.bokbookbok.ui.theme.BokBookBokTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
