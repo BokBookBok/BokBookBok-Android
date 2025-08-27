@@ -1,4 +1,5 @@
 import org.gradle.kotlin.dsl.implementation
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -7,6 +8,10 @@ plugins {
     kotlin("plugin.serialization") version "1.9.0"
     alias(libs.plugins.ktlint)
 }
+
+val properties = Properties()
+val propertiesFile = project.rootProject.file("local.properties")
+properties.load(propertiesFile.inputStream())
 
 android {
     namespace = "konkuk.link.bokbookbok"
@@ -20,6 +25,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val baseUrl = properties["BASE_URL"]?.toString() ?: "https://default-url.com/"
+        buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
     }
 
     buildTypes {
@@ -40,6 +48,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
