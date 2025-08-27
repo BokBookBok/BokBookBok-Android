@@ -10,6 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import konkuk.link.bokbookbok.screen.MainScreen
+import konkuk.link.bokbookbok.ui.theme.BOKBOOKBOKTheme
 import konkuk.link.bokbookbok.ui.theme.BokBookBokTheme
 
 class MainActivity : ComponentActivity() {
@@ -17,7 +18,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            BokBookBokTheme {
+            BOKBOOKBOKTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,
