@@ -1,8 +1,8 @@
 package konkuk.link.bokbookbok.component.common
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -34,7 +34,7 @@ fun ButtonComponent(
         modifier = Modifier
             .then(modifier)
             .height(52.dp)
-            .width(325.dp)
+            .fillMaxWidth()
     ) {
         Text(
             text = buttonText,

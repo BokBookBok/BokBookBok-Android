@@ -5,8 +5,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,7 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import konkuk.link.bokbookbok.component.common.AuthTextFieldComponent
+import konkuk.link.bokbookbok.component.auth.AuthTextFieldComponent
 import konkuk.link.bokbookbok.component.common.ButtonComponent
 import konkuk.link.bokbookbok.component.common.ButtonTypeEnum
 import konkuk.link.bokbookbok.navigation.NavigationGraph
@@ -34,6 +35,7 @@ fun LoginScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .padding(horizontal = 28.dp)
             .background(bokBookBokColors.white),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -46,6 +48,7 @@ fun LoginScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(70.dp))
 
         AuthTextFieldComponent(
+            modifier = Modifier.fillMaxWidth(),
             value = idValue,
             onValueChange = { newValue -> idValue = newValue },
             placeholder = "아이디",
@@ -55,6 +58,7 @@ fun LoginScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(24.dp))
 
         AuthTextFieldComponent(
+            modifier = Modifier.fillMaxWidth(),
             value = passwordValue,
             onValueChange = { newValue -> passwordValue = newValue },
             placeholder = "비밀번호",
@@ -79,7 +83,7 @@ fun LoginScreen(navController: NavController) {
         HorizontalDivider(
             color = bokBookBokColors.borderLightGray,
             thickness = 1.dp,
-            modifier = Modifier.width(326.dp)
+            modifier = Modifier.fillMaxWidth(),
         )
 
         Spacer(modifier = Modifier.height(35.dp))
@@ -89,7 +93,7 @@ fun LoginScreen(navController: NavController) {
                     "처음이신가요?",
             style = defaultBokBookBokTypography.subHeader,
             color = bokBookBokColors.fontDarkGray,
-            modifier = Modifier.width(325.dp)
+            modifier = Modifier.fillMaxWidth(),
         )
 
         Spacer(modifier = Modifier.height(20.dp))
