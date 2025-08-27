@@ -106,7 +106,7 @@ fun AuthTextFieldComponent(
                 ) {
                     Icon(
                         painter = painterResource(
-                            id = R.drawable.ic_password // TODO: Replace with actual visibility icons if available
+                            id = R.drawable.ic_password
                         ),
                         contentDescription = if (passwordVisible) "Hide password" else "Show password",
                         tint = if (passwordVisible) bokBookBokColors.borderDarkGray else bokBookBokColors.borderLightGray // 아이콘 색상
