@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,7 +46,7 @@ fun ReadingScreen(modifier: Modifier = Modifier) {
         Brush.verticalGradient(
             colorStops =
                 arrayOf(
-                    0.3f to bokBookBokColors.backGroundStart,
+                    0.1f to bokBookBokColors.backGroundStart,
                     1.0f to bokBookBokColors.backGroundEnd,
                 ),
         )
@@ -107,6 +108,7 @@ fun ReadingScreen(modifier: Modifier = Modifier) {
             // todo : 서버 uri로 AsyncImage로 바꿔야 함
             Box(
                 modifier = modifier
+                    .size(132.dp,196.dp)
                     .clip(RoundedCornerShape(8.dp))
                     .background(Color.LightGray),
                 contentAlignment = Alignment.Center

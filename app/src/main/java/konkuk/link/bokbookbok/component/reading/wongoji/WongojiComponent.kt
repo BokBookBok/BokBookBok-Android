@@ -28,7 +28,7 @@ private fun WonGoJiCell(
 ) {
     Box(
         modifier = modifier
-            .size(40.dp),
+            .size(34.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
