@@ -29,7 +29,7 @@ import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
 
 @Composable
 fun LoginScreen(navController: NavController) {
-    var idValue by remember { mutableStateOf("") }
+    var emailValue by remember { mutableStateOf("") }
     var passwordValue by remember { mutableStateOf("") }
 
     Column(
@@ -50,9 +50,9 @@ fun LoginScreen(navController: NavController) {
 
         AuthTextFieldComponent(
             modifier = Modifier.fillMaxWidth(),
-            value = idValue,
-            onValueChange = { newValue -> idValue = newValue },
-            placeholder = "아이디",
+            value = emailValue,
+            onValueChange = { newValue -> emailValue = newValue },
+            placeholder = "이메일",
             isPassword = false,
         )
 
@@ -104,7 +104,7 @@ fun LoginScreen(navController: NavController) {
             buttonText = "회원가입",
             buttonType = ButtonTypeEnum.LINE,
             onClick = {
-                navController.navigate(AuthScreen.SignUp.route)
+                navController.navigate(AuthScreen.Register.route)
             },
         )
     }
