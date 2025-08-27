@@ -27,10 +27,15 @@ fun ButtonComponent(
     buttonType: ButtonTypeEnum,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
 ) {
     Button(
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(containerColor = buttonType.color),
+        enabled = enabled,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = buttonType.color,
+            disabledContainerColor = bokBookBokColors.white
+        ),
         border = BorderStroke(1.dp, bokBookBokColors.borderYellow),
         shape = RoundedCornerShape(12.dp),
         modifier =
@@ -42,7 +47,7 @@ fun ButtonComponent(
         Text(
             text = buttonText,
             style = defaultBokBookBokTypography.body,
-            color = bokBookBokColors.fontDarkGray,
+            color = bokBookBokColors.fontDarkGray
         )
     }
 }
