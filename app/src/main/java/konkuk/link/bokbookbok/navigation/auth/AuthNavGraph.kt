@@ -7,12 +7,16 @@ import androidx.navigation.compose.navigation
 import konkuk.link.bokbookbok.navigation.NavigationGraph
 import konkuk.link.bokbookbok.screen.auth.LoginScreen
 import konkuk.link.bokbookbok.screen.auth.SignUpScreen
+import konkuk.link.bokbookbok.screen.splash.SplashScreen
 
 fun NavGraphBuilder.authNavGraph(navController: NavController) {
     navigation(
         route = NavigationGraph.AUTH,
-        startDestination = AuthScreen.Login.route,
+        startDestination = AuthScreen.Splash.route,
     ) {
+        composable(route = AuthScreen.Splash.route) {
+            SplashScreen(navController = navController)
+        }
         composable(route = AuthScreen.Login.route) {
             LoginScreen(navController = navController)
         }
