@@ -1,9 +1,11 @@
 package konkuk.link.bokbookbok.data.remote
 
+import konkuk.link.bokbookbok.data.model.request.login.LoginRequest
 import konkuk.link.bokbookbok.data.model.request.register.RegisterEmailRequest
 import konkuk.link.bokbookbok.data.model.request.register.RegisterNicknameRequest
 import konkuk.link.bokbookbok.data.model.request.register.RegisterRequest
 import konkuk.link.bokbookbok.data.model.response.BaseResponse
+import konkuk.link.bokbookbok.data.model.response.login.LoginResponse
 import konkuk.link.bokbookbok.data.model.response.register.RegisterEmailResponse
 import konkuk.link.bokbookbok.data.model.response.register.RegisterNicknameResponse
 import konkuk.link.bokbookbok.data.model.response.register.RegisterResponse
@@ -25,4 +27,9 @@ interface ApiService {
     suspend fun registerNicknameDuplicate(
         @Body request: RegisterNicknameRequest,
     ): BaseResponse<RegisterNicknameResponse>
+
+    @POST("/api/auth/login")
+    suspend fun login(
+        @Body request: LoginRequest,
+    ): BaseResponse<LoginResponse>
 }
