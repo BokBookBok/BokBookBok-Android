@@ -32,9 +32,7 @@ import konkuk.link.bokbookbok.navigation.auth.AuthScreen
 import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
 
-private fun String.isValidEmail(): Boolean {
-    return Patterns.EMAIL_ADDRESS.matcher(this).matches()
-}
+private fun String.isValidEmail(): Boolean = Patterns.EMAIL_ADDRESS.matcher(this).matches()
 
 @Composable
 fun RegisterScreen(
@@ -53,7 +51,8 @@ fun RegisterScreen(
     val nicknameCheckState by viewModel.nicknameCheckState.collectAsStateWithLifecycle()
 
     val passwordsMatch = passwordValue.isNotEmpty() && passwordValue == passwordConfirmValue
-    val isRegisterEnabled = emailCheckState == DuplicateCheckState.SUCCESS &&
+    val isRegisterEnabled =
+        emailCheckState == DuplicateCheckState.SUCCESS &&
             nicknameCheckState == DuplicateCheckState.SUCCESS &&
             passwordsMatch
 
@@ -62,22 +61,23 @@ fun RegisterScreen(
             { showEmailFormatAlert = false },
             title = "알림",
             text = "올바른 이메일 형식이 아닙니다.",
-            confirmButtonText = "확인"
+            confirmButtonText = "확인",
         )
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(bokBookBokColors.white)
-            .padding(horizontal = 28.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(bokBookBokColors.white)
+                .padding(horizontal = 28.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             text = "회원가입",
             style = defaultBokBookBokTypography.header,
-            color = bokBookBokColors.fontDarkBrown
+            color = bokBookBokColors.fontDarkBrown,
         )
 
         Spacer(modifier = Modifier.height(70.dp))
@@ -96,7 +96,7 @@ fun RegisterScreen(
                 } else {
                     showEmailFormatAlert = true
                 }
-            }
+            },
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -109,7 +109,7 @@ fun RegisterScreen(
             },
             placeholder = "닉네임",
             checkState = nicknameCheckState,
-            onCheckClick = { viewModel.registerNickname(RegisterNicknameRequest(nicknameValue)) }
+            onCheckClick = { viewModel.registerNickname(RegisterNicknameRequest(nicknameValue)) },
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -119,7 +119,7 @@ fun RegisterScreen(
             onPasswordValueChange = { passwordValue = it },
             passwordConfirmValue = passwordConfirmValue,
             onPasswordConfirmValueChange = { passwordConfirmValue = it },
-            passwordsMatch = passwordsMatch
+            passwordsMatch = passwordsMatch,
         )
 
         Spacer(modifier = Modifier.height(if (passwordConfirmValue.isEmpty()) 116.dp else 88.dp))

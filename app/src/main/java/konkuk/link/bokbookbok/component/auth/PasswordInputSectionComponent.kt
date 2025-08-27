@@ -45,7 +45,7 @@ fun PasswordInputSectionComponent(
             text = message,
             color = color,
             style = defaultBokBookBokTypography.subBody,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
     }
 }

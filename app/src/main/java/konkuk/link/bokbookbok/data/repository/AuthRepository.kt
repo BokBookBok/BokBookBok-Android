@@ -18,10 +18,13 @@ class AuthRepository(
     private val apiService: ApiService,
 ) {
     suspend fun registerUser(request: RegisterRequest): Result<RegisterResponse> = safeApiCall { apiService.register(request) }
+
     suspend fun registerEmailUser(request: RegisterEmailRequest): Result<RegisterEmailResponse> = safeApiCall { apiService.registerEmailDuplicate(request) }
+
     suspend fun registerNicknameUser(request: RegisterNicknameRequest): Result<RegisterNicknameResponse> = safeApiCall { apiService.registerNicknameDuplicate(request) }
-    suspend fun loginUser(request: LoginRequest): Result<LoginResponse> {
-        return try {
+
+    suspend fun loginUser(request: LoginRequest): Result<LoginResponse> =
+        try {
             val response = apiService.login(request)
 
             if (response.code == 2000 && response.data != null) {
@@ -40,11 +43,10 @@ class AuthRepository(
                 }
             }
         }
-    }
 }
 
-private fun parseErrorBody(e: HttpException): String {
-    return try {
+private fun parseErrorBody(e: HttpException): String =
+    try {
         val errorBodyString = e.toString()
         if (errorBodyString != null) {
             val errorResponse = Json.decodeFromString<BaseResponse<Unit>>(errorBodyString)
@@ -55,4 +57,3 @@ private fun parseErrorBody(e: HttpException): String {
     } catch (jsonError: Exception) {
         "오류 응답을 처리할 수 없습니다."
     }
-}

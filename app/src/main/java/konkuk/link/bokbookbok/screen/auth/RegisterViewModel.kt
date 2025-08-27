@@ -56,11 +56,12 @@ class RegisterViewModel(
             authRepository
                 .registerEmailUser(request)
                 .onSuccess { response ->
-                    _emailCheckState.value = if (response.duplicated) {
-                        DuplicateCheckState.FAILURE
-                    } else {
-                        DuplicateCheckState.SUCCESS
-                    }
+                    _emailCheckState.value =
+                        if (response.duplicated) {
+                            DuplicateCheckState.FAILURE
+                        } else {
+                            DuplicateCheckState.SUCCESS
+                        }
                 }.onFailure {
                     _emailCheckState.value = DuplicateCheckState.FAILURE
                 }
@@ -72,11 +73,12 @@ class RegisterViewModel(
             authRepository
                 .registerNicknameUser(request)
                 .onSuccess { response ->
-                    _nicknameCheckState.value = if (response.duplicated) {
-                        DuplicateCheckState.FAILURE
-                    } else {
-                        DuplicateCheckState.SUCCESS
-                    }
+                    _nicknameCheckState.value =
+                        if (response.duplicated) {
+                            DuplicateCheckState.FAILURE
+                        } else {
+                            DuplicateCheckState.SUCCESS
+                        }
                 }.onFailure {
                     _nicknameCheckState.value = DuplicateCheckState.FAILURE
                 }
