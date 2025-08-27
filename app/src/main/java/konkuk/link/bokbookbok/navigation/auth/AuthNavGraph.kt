@@ -4,20 +4,28 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import konkuk.link.bokbookbok.data.remote.RetrofitClient
+import konkuk.link.bokbookbok.data.repository.AuthRepository
 import konkuk.link.bokbookbok.navigation.NavigationGraph
 import konkuk.link.bokbookbok.screen.auth.LoginScreen
 import konkuk.link.bokbookbok.screen.auth.SignUpScreen
+import konkuk.link.bokbookbok.screen.auth.SignUpViewModelFactory
 
 fun NavGraphBuilder.authNavGraph(navController: NavController) {
     navigation(
         route = NavigationGraph.AUTH,
         startDestination = AuthScreen.Login.route,
     ) {
+        val authRepository = AuthRepository(RetrofitClient.publicApiService)
+
         composable(route = AuthScreen.Login.route) {
             LoginScreen(navController = navController)
         }
         composable(route = AuthScreen.SignUp.route) {
-            SignUpScreen(navController = navController)
+            SignUpScreen(
+                navController = navController,
+                factory = SignUpViewModelFactory(authRepository),
+            )
         }
     }
 }
