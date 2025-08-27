@@ -3,28 +3,27 @@ package konkuk.link.bokbookbok.component.common
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
-import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
+
+data class ModalContentData(
+    val title: String,
+    val message: String,
+    val primaryButtonText: String,
+    val onPrimaryClick: () -> Unit,
+    val secondaryButtonText: String
+)
 
 @Composable
 fun ModalComponent(
@@ -77,40 +76,6 @@ fun ModalComponent(
                         modifier = Modifier.weight(0.4f),
                     )
                 }
-            }
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ModalComponentPreview() {
-    // 배경을 만들어 Dialog가 잘 보이도록 함
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        // 실제 사용 시에는 상태(state)로 onDismissRequest를 제어해야 합니다.
-        ModalComponent(
-            onDismissRequest = {},
-            primaryButtonText = "시작",
-            onPrimaryButtonClick = { /* 시작하기 로직 */ },
-            secondaryButtonText = "취소",
-            onSecondaryButtonClick = { /* 돌아가기 로직 */ },
-        ) { modifier ->
-            Column(modifier = modifier.fillMaxWidth()) {
-                Text(
-                    text = "읽어보기",
-                    style = defaultBokBookBokTypography.header,
-                    textAlign = TextAlign.Center,
-                    color = bokBookBokColors.fontDarkBrown,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-                Spacer(modifier = Modifier.height(32.dp))
-                Text(
-                    text = "독서를\n" + "시작하시겠습니까?",
-                    style = defaultBokBookBokTypography.subHeader,
-                    color = bokBookBokColors.fontLightGray,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth(),
-                )
             }
         }
     }
