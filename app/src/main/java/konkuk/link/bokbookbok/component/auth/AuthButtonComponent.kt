@@ -13,10 +13,12 @@ import androidx.compose.ui.unit.dp
 import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
 
-enum class AuthButtonTypeEnum(val color: Color) {
+enum class AuthButtonTypeEnum(
+    val color: Color,
+) {
     BEFORE(bokBookBokColors.second),
     SUCCESS(bokBookBokColors.green),
-    FAIL(bokBookBokColors.borderYellow)
+    FAIL(bokBookBokColors.borderYellow),
 }
 
 @Composable
@@ -24,16 +26,17 @@ fun AuthButtonComponent(
     buttonText: String,
     buttonType: AuthButtonTypeEnum,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(containerColor = bokBookBokColors.white),
         border = BorderStroke(1.dp, buttonType.color),
         shape = RoundedCornerShape(8.dp),
-        modifier = Modifier
-            .then(modifier)
-            .height(53.dp)
+        modifier =
+            Modifier
+                .then(modifier)
+                .height(53.dp),
     ) {
         Text(
             text = buttonText,

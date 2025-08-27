@@ -33,39 +33,40 @@ fun ModalComponent(
     onPrimaryButtonClick: () -> Unit = {},
     secondaryButtonText: String?,
     onSecondaryButtonClick: () -> Unit = {},
-    content: @Composable (Modifier) -> Unit
+    content: @Composable (Modifier) -> Unit,
 ) {
     val shape = RoundedCornerShape(size = 15.dp)
 
     Dialog(onDismissRequest = onDismissRequest) {
         Column(
-            modifier = Modifier
-                .width(336.dp)
-                .height(287.dp)
-                .clip(shape)
-                .border(width = 0.5.dp, color = Color(0xFF767A7A), shape = shape)
-                .background(color = Color.White)
+            modifier =
+                Modifier
+                    .width(336.dp)
+                    .height(287.dp)
+                    .clip(shape)
+                    .border(width = 0.5.dp, color = Color(0xFF767A7A), shape = shape)
+                    .background(color = Color.White),
         ) {
-
             content(
                 Modifier
                     .weight(1f)
                     .padding(start = 36.dp, top = 36.dp, end = 36.dp)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
             )
 
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 48.dp, end = 48.dp, bottom = 36.dp),
-                horizontalArrangement = Arrangement.spacedBy(24.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(start = 48.dp, end = 48.dp, bottom = 36.dp),
+                horizontalArrangement = Arrangement.spacedBy(24.dp),
             ) {
                 if (secondaryButtonText != null) {
                     ButtonComponent(
                         buttonText = secondaryButtonText,
                         buttonType = ButtonTypeEnum.LINE,
                         onClick = onSecondaryButtonClick,
-                        modifier = Modifier.weight(0.4f)
+                        modifier = Modifier.weight(0.4f),
                     )
                 }
                 if (primaryButtonText != null) {
@@ -73,14 +74,13 @@ fun ModalComponent(
                         buttonText = primaryButtonText,
                         buttonType = ButtonTypeEnum.FILL,
                         onClick = onPrimaryButtonClick,
-                        modifier = Modifier.weight(0.4f)
+                        modifier = Modifier.weight(0.4f),
                     )
                 }
             }
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
@@ -93,7 +93,7 @@ fun ModalComponentPreview() {
             primaryButtonText = "시작",
             onPrimaryButtonClick = { /* 시작하기 로직 */ },
             secondaryButtonText = "취소",
-            onSecondaryButtonClick = { /* 돌아가기 로직 */ }
+            onSecondaryButtonClick = { /* 돌아가기 로직 */ },
         ) { modifier ->
             Column(modifier = modifier.fillMaxWidth()) {
                 Text(
@@ -101,7 +101,7 @@ fun ModalComponentPreview() {
                     style = defaultBokBookBokTypography.header,
                     textAlign = TextAlign.Center,
                     color = bokBookBokColors.fontDarkBrown,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
                 Spacer(modifier = Modifier.height(32.dp))
                 Text(
@@ -109,7 +109,7 @@ fun ModalComponentPreview() {
                     style = defaultBokBookBokTypography.subHeader,
                     color = bokBookBokColors.fontLightGray,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         }

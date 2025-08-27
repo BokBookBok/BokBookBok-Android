@@ -33,16 +33,17 @@ fun LoginScreen(navController: NavController) {
     var passwordValue by remember { mutableStateOf("") }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(bokBookBokColors.white)
-            .padding(horizontal = 28.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(bokBookBokColors.white)
+                .padding(horizontal = 28.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             text = "로그인",
-            style = defaultBokBookBokTypography.header
+            style = defaultBokBookBokTypography.header,
         )
 
         Spacer(modifier = Modifier.height(70.dp))
@@ -52,7 +53,7 @@ fun LoginScreen(navController: NavController) {
             value = idValue,
             onValueChange = { newValue -> idValue = newValue },
             placeholder = "아이디",
-            isPassword = false
+            isPassword = false,
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -62,7 +63,7 @@ fun LoginScreen(navController: NavController) {
             value = passwordValue,
             onValueChange = { newValue -> passwordValue = newValue },
             placeholder = "비밀번호",
-            isPassword = true
+            isPassword = true,
         )
 
         Spacer(modifier = Modifier.height(46.dp))
@@ -75,7 +76,7 @@ fun LoginScreen(navController: NavController) {
                         inclusive = true
                     }
                 }
-            }
+            },
         )
 
         Spacer(modifier = Modifier.height(55.dp))
@@ -89,7 +90,8 @@ fun LoginScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(35.dp))
 
         Text(
-            text = "bookbokbook이\n" +
+            text =
+                "bookbokbook이\n" +
                     "처음이신가요?",
             style = defaultBokBookBokTypography.subHeader,
             color = bokBookBokColors.fontDarkGray,
@@ -103,7 +105,7 @@ fun LoginScreen(navController: NavController) {
             buttonType = ButtonTypeEnum.LINE,
             onClick = {
                 navController.navigate(AuthScreen.SignUp.route)
-            }
+            },
         )
     }
 }

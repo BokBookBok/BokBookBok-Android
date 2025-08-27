@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import konkuk.link.bokbookbok.component.auth.AuthButtonComponent
 import konkuk.link.bokbookbok.component.auth.AuthButtonTypeEnum
@@ -30,44 +31,61 @@ import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
 
 @Composable
-fun SignUpScreen(navController: NavController) {
+fun SignUpScreen(
+    navController: NavController,
+    factory: SignUpViewModelFactory,
+) {
+    val viewModel: SignUpViewModel =
+        viewModel(
+            factory = factory,
+        )
+
     var idValue by remember { mutableStateOf("") }
-    var nicknameValue by remember { mutableStateOf("")}
+    var nicknameValue by remember { mutableStateOf("") }
     var passwordValue by remember { mutableStateOf("") }
     var passwordConfirmValue by remember { mutableStateOf("") }
 
+    /* 통신 예시
+    Button(
+        onClick = {
+            val request = RegisterRequest(email, nickname, password)
+            viewModel.register(request)
+        },
+    )
+     */
+
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(bokBookBokColors.white)
-            .padding(horizontal = 28.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(bokBookBokColors.white)
+                .padding(horizontal = 28.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             text = "회원가입",
-            style = defaultBokBookBokTypography.header
+            style = defaultBokBookBokTypography.header,
         )
 
         Spacer(modifier = Modifier.height(70.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             AuthTextFieldComponent(
                 modifier = Modifier.weight(1f),
                 value = idValue,
                 onValueChange = { newValue -> idValue = newValue },
                 placeholder = "아이디",
-                isPassword = false
+                isPassword = false,
             )
             Spacer(modifier = Modifier.width(14.dp))
             AuthButtonComponent(
                 buttonText = "중복확인",
                 buttonType = AuthButtonTypeEnum.BEFORE,
                 onClick = {
-
                 },
             )
         }
@@ -76,24 +94,22 @@ fun SignUpScreen(navController: NavController) {
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             AuthTextFieldComponent(
                 modifier = Modifier.weight(1f),
                 value = nicknameValue,
                 onValueChange = { newValue -> nicknameValue = newValue },
                 placeholder = "닉네임",
-                isPassword = false
+                isPassword = false,
             )
             Spacer(modifier = Modifier.width(14.dp))
             AuthButtonComponent(
                 buttonText = "중복확인",
                 buttonType = AuthButtonTypeEnum.BEFORE,
                 onClick = {
-
                 },
             )
-
         }
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -102,7 +118,7 @@ fun SignUpScreen(navController: NavController) {
             value = passwordValue,
             onValueChange = { newValue -> passwordValue = newValue },
             placeholder = "비밀번호",
-            isPassword = true
+            isPassword = true,
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -112,7 +128,7 @@ fun SignUpScreen(navController: NavController) {
             value = passwordConfirmValue,
             onValueChange = { newValue -> passwordConfirmValue = newValue },
             placeholder = "비밀번호확인",
-            isPassword = true
+            isPassword = true,
         )
 
         Spacer(modifier = Modifier.height(116.dp))
@@ -126,7 +142,7 @@ fun SignUpScreen(navController: NavController) {
                         inclusive = true
                     }
                 }
-            }
+            },
         )
     }
 }

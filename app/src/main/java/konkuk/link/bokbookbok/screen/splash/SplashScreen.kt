@@ -25,17 +25,19 @@ import kotlinx.coroutines.delay
 fun SplashScreen(navController: NavController) {
     val alpha = remember { Animatable(0f) }
 
-    val gradientBrush = Brush.verticalGradient(
-        colorStops = arrayOf(
-            0.3f to bokBookBokColors.backGroundStart,
-            1.0f to bokBookBokColors.backGroundEnd
+    val gradientBrush =
+        Brush.verticalGradient(
+            colorStops =
+                arrayOf(
+                    0.3f to bokBookBokColors.backGroundStart,
+                    1.0f to bokBookBokColors.backGroundEnd,
+                ),
         )
-    )
 
     LaunchedEffect(key1 = true) {
         alpha.animateTo(
             targetValue = 1f,
-            animationSpec = tween(durationMillis = 1500)
+            animationSpec = tween(durationMillis = 1500),
         )
         delay(1000)
 
@@ -47,13 +49,13 @@ fun SplashScreen(navController: NavController) {
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .drawBehind() {
-                drawRect(color = bokBookBokColors.backGroundBG)
-                drawRect(brush = gradientBrush)
-            }
-            .alpha(alpha.value),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .drawBehind {
+                    drawRect(color = bokBookBokColors.backGroundBG)
+                    drawRect(brush = gradientBrush)
+                }.alpha(alpha.value),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
