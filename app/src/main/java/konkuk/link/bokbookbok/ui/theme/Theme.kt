@@ -31,13 +31,13 @@ fun ProvideMementoColorsAndTypography(
 
 @Composable
 fun BOKBOOKBOKTheme(
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val bokBookBokColors = bokBookBokColors
 
     ProvideMementoColorsAndTypography(
         bokBookBokColors = bokBookBokColors,
-        bokBookBokTypography = defaultBokBookBokTypography
+        bokBookBokTypography = defaultBokBookBokTypography,
     ) {
         MaterialTheme(content = content)
     }

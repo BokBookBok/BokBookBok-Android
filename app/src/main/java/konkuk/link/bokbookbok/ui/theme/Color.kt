@@ -31,7 +31,6 @@ val BorderLightGray = Color(0xFFD9D9D9)
 val BorderDarkGray = Color(0xFF767A7A)
 val BorderYellow = Color(0xFFF49E02)
 
-
 @Immutable
 data class BokBookBokColors(
     // Colors
@@ -41,50 +40,45 @@ data class BokBookBokColors(
     val green: Color,
     val beige: Color,
     val blue: Color,
-
     // Background (Gradient)
     val backGroundStart: Color,
     val backGroundEnd: Color,
     val backGroundBG: Color,
-
     // Fonts
     val fontDarkBrown: Color,
     val fontLightGray: Color,
     val fontDarkGray: Color,
-
     // Border
     val borderLightGray: Color,
     val borderDarkGray: Color,
     val borderYellow: Color,
-
 ) : BokBookBokColorScheme()
 
-val bokBookBokColors = BokBookBokColors(
-    // Colors
-    main = Main,
-    second = Second,
-    white = White,
-    green = Green,
-    beige = Beige,
-    blue = Blue,
-
-    // Background (Gradient)
-    backGroundStart = BackgroundStart,
-    backGroundEnd = BackgroundEnd,
-    backGroundBG = White,
-
-    // Fonts
-    fontDarkBrown = FontDarkBrown,
-    fontLightGray = FontLightGray,
-    fontDarkGray = FontDarkGray,
-
-    // Border
-    borderLightGray = BorderLightGray,
-    borderDarkGray = BorderDarkGray,
-    borderYellow = BorderYellow
-)
+val bokBookBokColors =
+    BokBookBokColors(
+        // Colors
+        main = Main,
+        second = Second,
+        white = White,
+        green = Green,
+        beige = Beige,
+        blue = Blue,
+        // Background (Gradient)
+        backGroundStart = BackgroundStart,
+        backGroundEnd = BackgroundEnd,
+        backGroundBG = White,
+        // Fonts
+        fontDarkBrown = FontDarkBrown,
+        fontLightGray = FontLightGray,
+        fontDarkGray = FontDarkGray,
+        // Border
+        borderLightGray = BorderLightGray,
+        borderDarkGray = BorderDarkGray,
+        borderYellow = BorderYellow,
+    )
 
 // Local Colors
-val LocalBokBookBokColors = staticCompositionLocalOf<BokBookBokColors> {
-    error("No ColorsColorScheme provided")
-}
+val LocalBokBookBokColors =
+    staticCompositionLocalOf<BokBookBokColors> {
+        error("No ColorsColorScheme provided")
+    }
