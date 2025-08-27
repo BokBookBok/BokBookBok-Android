@@ -1,4 +1,4 @@
-package konkuk.link.bokbookbok.component.reading.wongoji
+package konkuk.link.bokbookbok.component.reading
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

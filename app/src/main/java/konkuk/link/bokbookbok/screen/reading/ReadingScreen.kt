@@ -33,7 +33,7 @@ import konkuk.link.bokbookbok.component.common.ReviewComponent
 import konkuk.link.bokbookbok.component.common.ReviewType
 import konkuk.link.bokbookbok.component.reading.ReadingStatus
 import konkuk.link.bokbookbok.component.reading.ReadingStatusButtonComponent
-import konkuk.link.bokbookbok.component.reading.wongoji.WonGoJiBoard
+import konkuk.link.bokbookbok.component.reading.WonGoJiBoard
 import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
 
