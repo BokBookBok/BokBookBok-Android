@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,19 +19,52 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import konkuk.link.bokbookbok.component.auth.AuthTextFieldComponent
+import konkuk.link.bokbookbok.component.common.AlertComponent
 import konkuk.link.bokbookbok.component.common.ButtonComponent
 import konkuk.link.bokbookbok.component.common.ButtonTypeEnum
+import konkuk.link.bokbookbok.data.model.request.login.LoginRequest
 import konkuk.link.bokbookbok.navigation.NavigationGraph
 import konkuk.link.bokbookbok.navigation.auth.AuthScreen
 import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(
+    navController: NavController,
+    factory: LoginViewModelFactory,
+) {
+    val viewModel: LoginViewModel = viewModel(factory = factory)
+
+    var showEmailFormatAlert by remember { mutableStateOf(false) }
+
+    val emailCheckState by viewModel.emailCheckState.collectAsStateWithLifecycle()
+    val loginErrorMessage by viewModel.loginErrorMessage.collectAsStateWithLifecycle()
+
     var emailValue by remember { mutableStateOf("") }
     var passwordValue by remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        viewModel.loginSuccessEvent.collect {
+            navController.navigate(NavigationGraph.MAIN) {
+                popUpTo(NavigationGraph.AUTH) {
+                    inclusive = true
+                }
+            }
+        }
+    }
+
+    if (showEmailFormatAlert) {
+        AlertComponent(
+            { showEmailFormatAlert = false },
+            title = "알림",
+            text = "올바른 이메일 형식이 아닙니다.",
+            confirmButtonText = "확인"
+        )
+    }
 
     Column(
         modifier =
@@ -51,7 +85,11 @@ fun LoginScreen(navController: NavController) {
         AuthTextFieldComponent(
             modifier = Modifier.fillMaxWidth(),
             value = emailValue,
-            onValueChange = { newValue -> emailValue = newValue },
+            onValueChange = {
+                emailValue = it
+                if (emailCheckState != DuplicateCheckState.IDLE) viewModel.resetEmailCheckState()
+                viewModel.clearLoginError()
+            },
             placeholder = "이메일",
             isPassword = false,
         )
@@ -61,21 +99,32 @@ fun LoginScreen(navController: NavController) {
         AuthTextFieldComponent(
             modifier = Modifier.fillMaxWidth(),
             value = passwordValue,
-            onValueChange = { newValue -> passwordValue = newValue },
+            onValueChange = {
+                passwordValue = it
+                viewModel.clearLoginError()
+            },
             placeholder = "비밀번호",
             isPassword = true,
         )
 
-        Spacer(modifier = Modifier.height(46.dp))
+        loginErrorMessage?.let { message ->
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = message,
+                color = bokBookBokColors.second, // 에러를 나타내는 색상
+                style = defaultBokBookBokTypography.subBody,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
+        Spacer(modifier = Modifier.height(if (loginErrorMessage == null) 46.dp else 24.dp))
+
         ButtonComponent(
             buttonText = "로그인",
             buttonType = ButtonTypeEnum.FILL,
             onClick = {
-                navController.navigate(NavigationGraph.MAIN) {
-                    popUpTo(NavigationGraph.AUTH) {
-                        inclusive = true
-                    }
-                }
+                val request = LoginRequest(emailValue,  passwordValue)
+                viewModel.login(request)
             },
         )
 
