@@ -39,8 +39,8 @@ fun SignUpScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 28.dp)
-            .background(bokBookBokColors.white),
+            .background(bokBookBokColors.white)
+            .padding(horizontal = 28.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {

@@ -27,7 +27,7 @@ fun SplashScreen(navController: NavController) {
 
     val gradientBrush = Brush.verticalGradient(
         colorStops = arrayOf(
-            0.0f to bokBookBokColors.backGroundStart,
+            0.3f to bokBookBokColors.backGroundStart,
             1.0f to bokBookBokColors.backGroundEnd
         )
     )
