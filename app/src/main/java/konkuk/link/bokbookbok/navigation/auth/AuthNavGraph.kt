@@ -9,14 +9,20 @@ import konkuk.link.bokbookbok.data.repository.AuthRepository
 import konkuk.link.bokbookbok.navigation.NavigationGraph
 import konkuk.link.bokbookbok.screen.auth.LoginScreen
 import konkuk.link.bokbookbok.screen.auth.SignUpScreen
+import konkuk.link.bokbookbok.screen.splash.SplashScreen
 import konkuk.link.bokbookbok.screen.auth.SignUpViewModelFactory
 
 fun NavGraphBuilder.authNavGraph(navController: NavController) {
     navigation(
         route = NavigationGraph.AUTH,
-        startDestination = AuthScreen.Login.route,
+        startDestination = AuthScreen.Splash.route,
     ) {
+
         val authRepository = AuthRepository(RetrofitClient.publicApiService)
+
+        composable(route = AuthScreen.Splash.route) {
+            SplashScreen(navController = navController)
+        }
 
         composable(route = AuthScreen.Login.route) {
             LoginScreen(navController = navController)
