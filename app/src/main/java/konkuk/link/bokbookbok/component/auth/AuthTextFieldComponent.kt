@@ -12,10 +12,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,9 +31,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import konkuk.link.bokbookbok.R
 import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
@@ -42,7 +42,7 @@ fun AuthTextFieldComponent(
     placeholder: String,
     modifier: Modifier = Modifier,
     isPassword: Boolean = false,
-    onConfirm: () -> Unit = {}
+    onConfirm: () -> Unit = {},
 ) {
     var isFocused by remember { mutableStateOf(false) }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -52,14 +52,15 @@ fun AuthTextFieldComponent(
     val shape = RoundedCornerShape(8.dp)
 
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(53.dp)
-            .clip(shape)
-            .background(backgroundColor)
-            .border(width = 1.dp, color = borderColor, shape = shape)
-            .padding(horizontal = 12.dp),
-        contentAlignment = Alignment.CenterStart
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(53.dp)
+                .clip(shape)
+                .background(backgroundColor)
+                .border(width = 1.dp, color = borderColor, shape = shape)
+                .padding(horizontal = 12.dp),
+        contentAlignment = Alignment.CenterStart,
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -67,49 +68,53 @@ fun AuthTextFieldComponent(
             BasicTextField(
                 value = value,
                 onValueChange = onValueChange,
-                modifier = Modifier
-                    .weight(1f)
-                    .onFocusChanged { focusState ->
-                        isFocused = focusState.isFocused
-                    },
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .onFocusChanged { focusState ->
+                            isFocused = focusState.isFocused
+                        },
                 singleLine = true,
                 cursorBrush = SolidColor(bokBookBokColors.fontDarkGray),
                 textStyle = defaultBokBookBokTypography.body.copy(color = bokBookBokColors.fontDarkGray),
                 visualTransformation = if (isPassword && !passwordVisible) PasswordVisualTransformation() else VisualTransformation.None,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = if (isPassword) KeyboardType.Password else KeyboardType.Text,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = { onConfirm() }
-                ),
+                keyboardOptions =
+                    KeyboardOptions(
+                        keyboardType = if (isPassword) KeyboardType.Password else KeyboardType.Text,
+                        imeAction = ImeAction.Done,
+                    ),
+                keyboardActions =
+                    KeyboardActions(
+                        onDone = { onConfirm() },
+                    ),
                 decorationBox = { innerTextField ->
                     Box(
                         modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.CenterStart
+                        contentAlignment = Alignment.CenterStart,
                     ) {
                         if (value.isEmpty()) {
                             Text(
                                 text = placeholder,
                                 style = defaultBokBookBokTypography.body,
-                                color = bokBookBokColors.borderLightGray
+                                color = bokBookBokColors.borderLightGray,
                             )
                         }
                         innerTextField()
                     }
-                }
+                },
             )
             if (isPassword) {
                 IconButton(
                     onClick = { passwordVisible = !passwordVisible },
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(24.dp),
                 ) {
                     Icon(
-                        painter = painterResource(
-                            id = R.drawable.ic_password
-                        ),
+                        painter =
+                            painterResource(
+                                id = R.drawable.ic_password,
+                            ),
                         contentDescription = if (passwordVisible) "Hide password" else "Show password",
-                        tint = if (passwordVisible) bokBookBokColors.borderDarkGray else bokBookBokColors.borderLightGray // 아이콘 색상
+                        tint = if (passwordVisible) bokBookBokColors.borderDarkGray else bokBookBokColors.borderLightGray, // 아이콘 색상
                     )
                 }
             }

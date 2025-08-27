@@ -13,8 +13,9 @@ import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 fun MainScreen() {
     val bottomNavController = rememberNavController()
     Scaffold(
-        modifier = Modifier
-            .navigationBarsPadding(),
+        modifier =
+            Modifier
+                .navigationBarsPadding(),
         containerColor = bokBookBokColors.white,
         bottomBar = { CustomBottomNavBar(navController = bottomNavController) },
     ) { innerPadding ->

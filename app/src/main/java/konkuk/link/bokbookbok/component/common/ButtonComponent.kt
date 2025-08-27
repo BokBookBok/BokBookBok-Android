@@ -14,9 +14,11 @@ import androidx.compose.ui.unit.dp
 import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
 
-enum class ButtonTypeEnum(val color: Color) {
+enum class ButtonTypeEnum(
+    val color: Color,
+) {
     LINE(bokBookBokColors.white),
-    FILL(bokBookBokColors.main)
+    FILL(bokBookBokColors.main),
 }
 
 @Composable
@@ -24,22 +26,23 @@ fun ButtonComponent(
     buttonText: String,
     buttonType: ButtonTypeEnum,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(containerColor = buttonType.color),
         border = BorderStroke(1.dp, bokBookBokColors.borderYellow),
         shape = RoundedCornerShape(12.dp),
-        modifier = Modifier
-            .then(modifier)
-            .height(52.dp)
-            .fillMaxWidth()
+        modifier =
+            Modifier
+                .then(modifier)
+                .height(52.dp)
+                .fillMaxWidth(),
     ) {
         Text(
             text = buttonText,
             style = defaultBokBookBokTypography.body,
-            color = bokBookBokColors.fontDarkGray
+            color = bokBookBokColors.fontDarkGray,
         )
     }
 }
