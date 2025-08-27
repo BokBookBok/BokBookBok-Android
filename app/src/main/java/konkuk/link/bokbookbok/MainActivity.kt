@@ -9,7 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import konkuk.link.bokbookbok.screen.MainScreen
+import konkuk.link.bokbookbok.navigation.RootNavHost
 import konkuk.link.bokbookbok.ui.theme.BOKBOOKBOKTheme
 
 class MainActivity : ComponentActivity() {
@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background,
                 ) {
                     val navController = rememberNavController()
-                    MainScreen(navController = navController)
+                    RootNavHost(navController = navController)
                 }
             }
         }

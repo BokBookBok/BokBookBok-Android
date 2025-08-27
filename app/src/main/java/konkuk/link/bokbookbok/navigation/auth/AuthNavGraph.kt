@@ -1,0 +1,23 @@
+package konkuk.link.bokbookbok.navigation.auth
+
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
+import konkuk.link.bokbookbok.navigation.NavigationGraph
+import konkuk.link.bokbookbok.screen.auth.LoginScreen
+import konkuk.link.bokbookbok.screen.auth.SignUpScreen
+
+fun NavGraphBuilder.authNavGraph(navController: NavController) {
+    navigation(
+        route = NavigationGraph.AUTH,
+        startDestination = AuthScreen.Login.route,
+    ) {
+        composable(route = AuthScreen.Login.route) {
+            LoginScreen(navController = navController)
+        }
+        composable(route = AuthScreen.SignUp.route) {
+            SignUpScreen(navController = navController)
+        }
+    }
+}
