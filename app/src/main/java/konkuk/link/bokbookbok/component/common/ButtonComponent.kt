@@ -1,0 +1,46 @@
+package konkuk.link.bokbookbok.component.common
+
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
+import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
+
+enum class ButtonTypeEnum(val color: Color) {
+    LINE(bokBookBokColors.white),
+    FILL(bokBookBokColors.main)
+}
+
+@Composable
+fun ButtonComponent(
+    buttonText: String,
+    buttonType: ButtonTypeEnum,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(containerColor = buttonType.color),
+        border = BorderStroke(1.dp, bokBookBokColors.borderYellow),
+        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier
+            .then(modifier)
+            .height(52.dp)
+            .width(325.dp)
+    ) {
+        Text(
+            text = buttonText,
+            style = defaultBokBookBokTypography.body,
+            color = bokBookBokColors.fontDarkGray
+        )
+    }
+}
