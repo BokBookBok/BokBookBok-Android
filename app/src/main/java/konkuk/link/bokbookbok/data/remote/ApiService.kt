@@ -1,6 +1,5 @@
 package konkuk.link.bokbookbok.data.remote
 
-import konkuk.link.bokbookbok.data.model.request.RegisterRequest
 import konkuk.link.bokbookbok.data.model.request.ReviewWriteRequest
 import konkuk.link.bokbookbok.data.model.request.VoteRequest
 import konkuk.link.bokbookbok.data.model.request.login.LoginRequest
@@ -8,7 +7,6 @@ import konkuk.link.bokbookbok.data.model.request.register.RegisterEmailRequest
 import konkuk.link.bokbookbok.data.model.request.register.RegisterNicknameRequest
 import konkuk.link.bokbookbok.data.model.request.register.RegisterRequest
 import konkuk.link.bokbookbok.data.model.response.BaseResponse
-import konkuk.link.bokbookbok.data.model.response.RegisterResponse
 import konkuk.link.bokbookbok.data.model.response.ReviewWriteResponse
 import konkuk.link.bokbookbok.data.model.response.VoteResponse
 import konkuk.link.bokbookbok.data.model.response.login.LoginResponse
