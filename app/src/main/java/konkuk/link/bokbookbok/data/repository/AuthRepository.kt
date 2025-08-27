@@ -27,7 +27,7 @@ class AuthRepository(
         try {
             val response = apiService.login(request)
 
-            if (response.code == 2000 && response.data != null) {
+            if (response.code == 200 && response.data != null) {
                 Result.success(response.data)
             } else {
                 Result.failure(ApiException(response.msg))
