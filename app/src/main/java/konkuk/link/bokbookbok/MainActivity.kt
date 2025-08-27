@@ -4,17 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import konkuk.link.bokbookbok.navigation.RootNavHost
 import konkuk.link.bokbookbok.ui.theme.BOKBOOKBOKTheme
-import konkuk.link.bokbookbok.ui.theme.BokBookBokTheme
-import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,48 +18,14 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             BOKBOOKBOKTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding),
-                    )
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background,
+                ) {
+                    val navController = rememberNavController()
+                    RootNavHost(navController = navController)
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(
-    name: String,
-    modifier: Modifier = Modifier,
-) {
-    Column {
-        Text(
-            text = "책을 읽읍시다",
-            modifier = modifier,
-            color = bokBookBokColors.blue,
-            style = BokBookBokTheme.bokBookBokTypography.body
-        )
-        Text(
-            text = "책을 읽읍시다",
-            modifier = modifier,
-            color = bokBookBokColors.main,
-            style = BokBookBokTheme.bokBookBokTypography.subLogo
-        )
-        Text(
-            text = "책을 읽읍시다",
-            modifier = modifier,
-            color = bokBookBokColors.fontDarkGray,
-            style = BokBookBokTheme.bokBookBokTypography.logo
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    BOKBOOKBOKTheme {
-        Greeting("Android")
     }
 }
