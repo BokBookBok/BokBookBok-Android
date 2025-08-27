@@ -1,10 +1,9 @@
-package konkuk.link.bokbookbok.data.model.request
+package konkuk.link.bokbookbok.data.model.request.login
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RegisterRequest(
+data class LoginRequest(
     val email: String,
-    val nickname: String,
     val password: String,
 )

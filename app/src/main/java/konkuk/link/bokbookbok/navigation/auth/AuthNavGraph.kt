@@ -8,8 +8,9 @@ import konkuk.link.bokbookbok.data.remote.RetrofitClient
 import konkuk.link.bokbookbok.data.repository.AuthRepository
 import konkuk.link.bokbookbok.navigation.NavigationGraph
 import konkuk.link.bokbookbok.screen.auth.LoginScreen
-import konkuk.link.bokbookbok.screen.auth.SignUpScreen
-import konkuk.link.bokbookbok.screen.auth.SignUpViewModelFactory
+import konkuk.link.bokbookbok.screen.auth.LoginViewModelFactory
+import konkuk.link.bokbookbok.screen.auth.RegisterScreen
+import konkuk.link.bokbookbok.screen.auth.RegisterViewModelFactory
 import konkuk.link.bokbookbok.screen.splash.SplashScreen
 
 fun NavGraphBuilder.authNavGraph(navController: NavController) {
@@ -24,12 +25,15 @@ fun NavGraphBuilder.authNavGraph(navController: NavController) {
         }
 
         composable(route = AuthScreen.Login.route) {
-            LoginScreen(navController = navController)
-        }
-        composable(route = AuthScreen.SignUp.route) {
-            SignUpScreen(
+            LoginScreen(
                 navController = navController,
-                factory = SignUpViewModelFactory(authRepository),
+                factory = LoginViewModelFactory(authRepository),
+            )
+        }
+        composable(route = AuthScreen.Register.route) {
+            RegisterScreen(
+                navController = navController,
+                factory = RegisterViewModelFactory(authRepository),
             )
         }
     }

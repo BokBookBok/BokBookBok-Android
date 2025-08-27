@@ -11,10 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import konkuk.link.bokbookbok.navigation.RootNavHost
 import konkuk.link.bokbookbok.ui.theme.BOKBOOKBOKTheme
+import konkuk.link.bokbookbok.util.TokenManager
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        TokenManager.init(this)
         enableEdgeToEdge()
         setContent {
             BOKBOOKBOKTheme {
