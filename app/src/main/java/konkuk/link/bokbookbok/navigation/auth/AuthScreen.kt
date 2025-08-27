@@ -7,7 +7,7 @@ sealed class AuthScreen(
 
     data object Login : AuthScreen("login")
 
-    data object SignUp : AuthScreen("signup")
+    data object Register : AuthScreen("register")
 
     data object Admin : AuthScreen("admin")
 }

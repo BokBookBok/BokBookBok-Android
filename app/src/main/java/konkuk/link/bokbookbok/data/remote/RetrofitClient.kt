@@ -2,6 +2,7 @@ package konkuk.link.bokbookbok.data.remote
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import konkuk.link.bokbookbok.BuildConfig
+import konkuk.link.bokbookbok.util.TokenManager
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
@@ -10,19 +11,17 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 
 object RetrofitClient {
-    // TODO: 로그인 후 SharedPreferences에 저장된 토큰을 가져오도록 수정해야 함
-    private const val ACCESS_TOKEN = "your_access_token_here"
-
     private val authOkHttpClient by lazy {
         val authInterceptor =
             Interceptor { chain ->
-                val request =
-                    chain
-                        .request()
-                        .newBuilder()
-                        .addHeader("Authorization", "Bearer $ACCESS_TOKEN")
-                        .build()
-                chain.proceed(request)
+                val token = TokenManager.getAccessToken()
+                val requestBuilder = chain.request().newBuilder()
+
+                token?.let {
+                    requestBuilder.addHeader("Authorization", "Bearer $it")
+                }
+
+                chain.proceed(requestBuilder.build())
             }
 
         OkHttpClient

@@ -1,4 +1,4 @@
-package konkuk.link.bokbookbok.data.model.response
+package konkuk.link.bokbookbok.data.model.response.register
 
 import kotlinx.serialization.Serializable
 
