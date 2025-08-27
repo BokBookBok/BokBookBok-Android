@@ -27,7 +27,7 @@ import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
 
 @Composable
-fun ActionModal(
+fun ModalComponent(
     onDismissRequest: () -> Unit,
     primaryButtonText: String?,
     onPrimaryButtonClick: () -> Unit = {},
@@ -84,11 +84,11 @@ fun ActionModal(
 
 @Preview(showBackground = true)
 @Composable
-fun ActionModalPreview() {
+fun ModalComponentPreview() {
     // 배경을 만들어 Dialog가 잘 보이도록 함
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         // 실제 사용 시에는 상태(state)로 onDismissRequest를 제어해야 합니다.
-        ActionModal(
+        ModalComponent(
             onDismissRequest = {},
             primaryButtonText = "시작",
             onPrimaryButtonClick = { /* 시작하기 로직 */ },
