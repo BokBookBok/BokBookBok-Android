@@ -27,8 +27,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import konkuk.link.bokbookbok.component.common.ModalComponent
-import konkuk.link.bokbookbok.component.reading.ReadingStatus
-import konkuk.link.bokbookbok.component.reading.ReadingStatusButtonComponent
 import konkuk.link.bokbookbok.component.record.RecordBookComponent
 import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
@@ -95,10 +93,11 @@ fun RecordScreen(modifier: Modifier = Modifier) {
                     color = bokBookBokColors.fontDarkBrown
                 )
             }
-            ReadingStatusButtonComponent(
-                status = ReadingStatus.TOTAL_BOOKS_READ(26),
-                onClick = {  }
-            )
+            // todo : 머지하고 주석 풀 것
+//            ReadingStatusButtonComponent(
+//                status = ReadingStatus.TOTAL_BOOKS_READ(26),
+//                onClick = {  }
+//            )
         }
 
         Column(
