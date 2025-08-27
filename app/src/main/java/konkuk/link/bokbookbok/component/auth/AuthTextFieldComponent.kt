@@ -1,4 +1,4 @@
-package konkuk.link.bokbookbok.component.common
+package konkuk.link.bokbookbok.component.auth
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -41,6 +40,7 @@ fun AuthTextFieldComponent(
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String,
+    modifier: Modifier = Modifier,
     isPassword: Boolean = false,
     onConfirm: () -> Unit = {}
 ) {
@@ -52,8 +52,8 @@ fun AuthTextFieldComponent(
     val shape = RoundedCornerShape(8.dp)
 
     Box(
-        modifier = Modifier
-            .width(326.dp)
+        modifier = modifier
+            .fillMaxWidth()
             .height(53.dp)
             .clip(shape)
             .background(backgroundColor)
@@ -63,7 +63,6 @@ fun AuthTextFieldComponent(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
         ) {
             BasicTextField(
                 value = value,
@@ -107,7 +106,7 @@ fun AuthTextFieldComponent(
                 ) {
                     Icon(
                         painter = painterResource(
-                            id = R.drawable.ic_password
+                            id = R.drawable.ic_password // TODO: Replace with actual visibility icons if available
                         ),
                         contentDescription = if (passwordVisible) "Hide password" else "Show password",
                         tint = if (passwordVisible) bokBookBokColors.borderDarkGray else bokBookBokColors.borderLightGray // 아이콘 색상
