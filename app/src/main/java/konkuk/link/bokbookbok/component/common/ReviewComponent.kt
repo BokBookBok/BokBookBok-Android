@@ -1,28 +1,31 @@
 package konkuk.link.bokbookbok.component.common
 
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import konkuk.link.bokbookbok.R
@@ -55,58 +58,66 @@ fun ReviewComponent(
         }
     }
 
+    var isExpanded by remember { mutableStateOf(false) }
+    var lineCount by remember { mutableStateOf(0) }
+    val isExpandable = lineCount > 3
+    var contentTextHeight by remember { mutableStateOf(0.dp) }
+    val collapsedHeight = 120.dp
+
+    val targetHeight = if (isExpanded) contentTextHeight else collapsedHeight
+    val animatedHeight by animateDpAsState(targetValue = targetHeight, label = "reviewHeight")
+
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(120.dp)
             .border(width = 0.5.dp, color = Color(0xFFD9D9D9))
             .background(color = Color.White)
+            .clickable(enabled = isExpandable) {
+                if (isExpandable) isExpanded = !isExpanded
+            }
     ) {
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .width(8.dp)
+                .height(animatedHeight)
+                .background(leftBarColor)
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp, end = 12.dp, top = 12.dp, bottom = 12.dp)
+                .align(Alignment.TopStart)
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(8.dp)
-                    .background(leftBarColor)
+            Text(
+                text = writer,
+                style = defaultBokBookBokTypography.body,
+                color = bokBookBokColors.fontLightGray,
+                modifier = Modifier.padding(bottom = 4.dp)
             )
 
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .padding(horizontal = 12.dp, vertical = 12.dp)
-            ) {
-                Text(
-                    text = writer,
-                    style = defaultBokBookBokTypography.body,
-                    color = bokBookBokColors.fontLightGray
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-
-                val scrollState = rememberScrollState()
-
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .verticalScroll(scrollState)
-                ) {
-                    Text(
-                        text = content,
-                        style = defaultBokBookBokTypography.body,
-                        color = bokBookBokColors.fontDarkGray,
-                    )
+            Text(
+                text = content,
+                style = defaultBokBookBokTypography.body,
+                color = bokBookBokColors.fontDarkGray,
+                maxLines = if (isExpanded || !isExpandable) Int.MAX_VALUE else 3,
+                overflow = TextOverflow.Ellipsis,
+                onTextLayout = { textLayoutResult ->
+                    if (lineCount == 0) {
+                        lineCount = textLayoutResult.lineCount
+                    }
+                },
+                modifier = Modifier.onSizeChanged { size ->
+                    contentTextHeight = size.height.dp
                 }
-            }
+            )
         }
 
         iconResId?.let {
             IconButton(
                 onClick = onIconClick,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
+                modifier = Modifier.align(Alignment.TopEnd)
             ) {
                 Icon(
                     painter = painterResource(id = it),
@@ -118,12 +129,14 @@ fun ReviewComponent(
     }
 }
 
+
 @Preview(showBackground = true)
 @Composable
 fun ReviewComponentPreview() {
     Column(modifier = Modifier
         .padding(16.dp)
-        .width(380.dp)) {
+        .width(380.dp)
+    ) {
         ReviewComponent(
             writer = "독서왕",
             content = "정말 인생 책입니다. 모두가 꼭 읽어봤으면 하는 바람입니다. 감동과 교훈이 있는 최고의 소설!",
