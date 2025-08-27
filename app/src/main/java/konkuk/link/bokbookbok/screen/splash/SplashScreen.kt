@@ -3,7 +3,6 @@ package konkuk.link.bokbookbok.screen.splash
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
@@ -26,9 +26,9 @@ fun SplashScreen(navController: NavController) {
     val alpha = remember { Animatable(0f) }
 
     val gradientBrush = Brush.verticalGradient(
-        colorStops = arrayOf( // 0% 지점
-            0.0f to bokBookBokColors.backGroundStart,   // 10% 지점
-            1.0f to bokBookBokColors.backGroundEnd      // 100% 지점
+        colorStops = arrayOf(
+            0.0f to bokBookBokColors.backGroundStart,
+            1.0f to bokBookBokColors.backGroundEnd
         )
     )
 
@@ -49,9 +49,10 @@ fun SplashScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                brush = gradientBrush
-            )
+            .drawBehind() {
+                drawRect(color = bokBookBokColors.backGroundBG)
+                drawRect(brush = gradientBrush)
+            }
             .alpha(alpha.value),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
