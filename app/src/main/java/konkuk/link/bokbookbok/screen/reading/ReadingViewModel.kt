@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import konkuk.link.bokbookbok.data.model.response.reading.ReadingApiStatus
 import konkuk.link.bokbookbok.data.model.response.reading.ReadingHomeResponse
 import konkuk.link.bokbookbok.data.repository.ReadingRepository
+import konkuk.link.bokbookbok.util.UserManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -13,6 +14,7 @@ import kotlinx.coroutines.launch
 
 data class ReadingUiState(
     val homeData: ReadingHomeResponse? = null,
+    val userNickname: String? = null,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
 )
@@ -47,12 +49,15 @@ class ReadingViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
+            val nickname = UserManager.getNickname()
+
             readingRepository.getReading()
                 .onSuccess { homeResponse ->
                     _uiState.update {
                         it.copy(
                             isLoading = false,
                             homeData = homeResponse,
+                            userNickname = nickname,
                             errorMessage = null
                         )
                     }
@@ -100,9 +105,5 @@ class ReadingViewModel(
                 }
             }
         }
-    }
-
-    fun userMessageShown() {
-        _uiState.update { it.copy(errorMessage = null) }
     }
 }
