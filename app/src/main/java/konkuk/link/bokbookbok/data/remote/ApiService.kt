@@ -7,6 +7,9 @@ import konkuk.link.bokbookbok.data.model.request.register.RegisterEmailRequest
 import konkuk.link.bokbookbok.data.model.request.register.RegisterNicknameRequest
 import konkuk.link.bokbookbok.data.model.request.register.RegisterRequest
 import konkuk.link.bokbookbok.data.model.response.BaseResponse
+import konkuk.link.bokbookbok.data.model.response.BookReviewResponse
+import konkuk.link.bokbookbok.data.model.response.CurrentBook
+import konkuk.link.bokbookbok.data.model.response.LikeResponse
 import konkuk.link.bokbookbok.data.model.response.ReviewWriteResponse
 import konkuk.link.bokbookbok.data.model.response.VoteResponse
 import konkuk.link.bokbookbok.data.model.response.login.LoginResponse
@@ -54,4 +57,17 @@ interface ApiService {
     suspend fun login(
         @Body request: LoginRequest,
     ): BaseResponse<LoginResponse>
+
+    @GET("/api/books/{bookId}")
+    suspend fun getBookReviews(
+        @Path("bookId") bookId: Int,
+    ): BaseResponse<BookReviewResponse>
+
+    @POST("/api/reviews/{reviewId}/likes")
+    suspend fun postLike(
+        @Path("reviewId") reviewId: Int,
+    ): BaseResponse<LikeResponse>
+
+    @GET("/api/books/current")
+    suspend fun getCurrentBook(): BaseResponse<CurrentBook>
 }
