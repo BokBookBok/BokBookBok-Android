@@ -92,7 +92,7 @@ fun ReviewScreen(
     }
 
     Scaffold(
-        modifier = Modifier.background(color = bokBookBokColors.white),
+        containerColor = bokBookBokColors.white,
         floatingActionButton = {
             if (uiState.bookReview?.myReview == null) {
                 WriteFAB(
