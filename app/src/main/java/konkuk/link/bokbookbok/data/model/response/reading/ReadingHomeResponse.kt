@@ -17,7 +17,7 @@ data class Book(
     val title: String,
     val author: String,
     val imageUrl: String,
-    val description: String
+    val description: String?
 )
 
 @Serializable
@@ -28,7 +28,9 @@ data class Record(
 
 @Serializable
 data class Review(
+    val id: Int,
     val nickname: String,
+    val name: String?,
     val content: String,
     val likeCount: Int,
 )
