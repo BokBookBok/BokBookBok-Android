@@ -28,7 +28,7 @@ import konkuk.link.bokbookbok.component.common.ButtonTypeEnum
 import konkuk.link.bokbookbok.data.model.request.register.RegisterEmailRequest
 import konkuk.link.bokbookbok.data.model.request.register.RegisterNicknameRequest
 import konkuk.link.bokbookbok.data.model.request.register.RegisterRequest
-import konkuk.link.bokbookbok.navigation.auth.AuthScreen
+import konkuk.link.bokbookbok.navigation.Screen
 import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
 
@@ -132,8 +132,8 @@ fun RegisterScreen(
                 if (isRegisterEnabled) {
                     val request = RegisterRequest(emailValue, nicknameValue, passwordValue)
                     viewModel.register(request)
-                    navController.navigate(AuthScreen.Login.route) {
-                        popUpTo(AuthScreen.Register.route) { inclusive = true }
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(Screen.Register.route) { inclusive = true }
                     }
                 }
             },

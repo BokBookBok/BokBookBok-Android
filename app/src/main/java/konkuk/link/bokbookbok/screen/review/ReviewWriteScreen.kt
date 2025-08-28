@@ -1,5 +1,6 @@
 package konkuk.link.bokbookbok.screen.review
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,8 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,27 +31,49 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import konkuk.link.bokbookbok.component.common.BookInfoCard
 import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
 
 @Composable
-fun ReviewWriteScreen(navController: NavController) {
+fun ReviewWriteScreen(
+    navController: NavController,
+    factory: ReviewWriteViewModelFactory,
+) {
+    val viewModel: ReviewWriteViewModel = viewModel(factory = factory)
+    val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+
     var reviewText by remember { mutableStateOf("") }
+
+    LaunchedEffect(uiState.postState) {
+        when (val state = uiState.postState) {
+            is ReviewWritePostState.Success -> {
+                Toast.makeText(context, "감상평이 등록되었습니다.", Toast.LENGTH_SHORT).show()
+                navController.popBackStack()
+            }
+            is ReviewWritePostState.Error -> {
+                Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
+            }
+            else -> {}
+        }
+    }
 
     Column(
         modifier =
             Modifier
                 .fillMaxSize()
-                .padding(horizontal = 28.dp, vertical = 12.dp)
-                .background(bokBookBokColors.white),
+                .background(bokBookBokColors.white)
+                .padding(horizontal = 28.dp, vertical = 12.dp),
     ) {
         ReviewWriteTopBar(
             onCloseClick = { navController.popBackStack() },
             onPostClick = {
-                // TODO: 서버에 reviewText 전송하는 로직 구현
+                viewModel.postReview(reviewText)
             },
+            isPostEnabled = reviewText.isNotBlank() && uiState.postState !is ReviewWritePostState.Loading,
         )
         Spacer(modifier = Modifier.height(21.dp))
         // TODO: 서버에 책 정보 받아오기 구현
@@ -69,6 +94,7 @@ fun ReviewWriteScreen(navController: NavController) {
 fun ReviewWriteTopBar(
     onCloseClick: () -> Unit,
     onPostClick: () -> Unit,
+    isPostEnabled: Boolean,
 ) {
     Row(
         modifier =
@@ -82,7 +108,7 @@ fun ReviewWriteTopBar(
             Icon(imageVector = Icons.Default.Close, contentDescription = "닫기", tint = bokBookBokColors.fontLightGray)
         }
         Text(text = "감상평 작성하기", style = defaultBokBookBokTypography.subHeader, color = bokBookBokColors.fontDarkBrown)
-        TextButton(onClick = onPostClick) {
+        TextButton(onClick = onPostClick, enabled = isPostEnabled) {
             Text(text = "게시", style = defaultBokBookBokTypography.body, color = bokBookBokColors.fontLightGray)
         }
     }
@@ -121,6 +147,7 @@ fun ReviewWriteTopBarPreview() {
     ReviewWriteTopBar(
         onCloseClick = {},
         onPostClick = {},
+        isPostEnabled = true,
     )
 }
 
@@ -145,5 +172,5 @@ fun ReviewWriteTextFieldWithTextPreview() {
 @Preview(showBackground = true)
 @Composable
 fun ReviewWriteScreenPreview() {
-    ReviewWriteScreen(navController = NavController(LocalContext.current))
+    // ReviewWriteScreen(navController = NavController(LocalContext.current))
 }

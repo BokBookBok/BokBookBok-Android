@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import konkuk.link.bokbookbok.R
-import konkuk.link.bokbookbok.navigation.auth.AuthScreen
+import konkuk.link.bokbookbok.navigation.Screen
 import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import kotlinx.coroutines.delay
 
@@ -41,8 +41,8 @@ fun SplashScreen(navController: NavController) {
         )
         delay(1000)
 
-        navController.navigate(AuthScreen.Login.route) {
-            popUpTo(AuthScreen.Splash.route) {
+        navController.navigate(Screen.Login.route) {
+            popUpTo(Screen.Splash.route) {
                 inclusive = true
             }
         }

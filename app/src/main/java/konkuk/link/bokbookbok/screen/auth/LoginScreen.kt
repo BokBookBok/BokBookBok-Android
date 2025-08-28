@@ -27,8 +27,7 @@ import konkuk.link.bokbookbok.component.common.AlertComponent
 import konkuk.link.bokbookbok.component.common.ButtonComponent
 import konkuk.link.bokbookbok.component.common.ButtonTypeEnum
 import konkuk.link.bokbookbok.data.model.request.login.LoginRequest
-import konkuk.link.bokbookbok.navigation.NavigationGraph
-import konkuk.link.bokbookbok.navigation.auth.AuthScreen
+import konkuk.link.bokbookbok.navigation.Screen
 import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
 
@@ -49,8 +48,8 @@ fun LoginScreen(
 
     LaunchedEffect(Unit) {
         viewModel.loginSuccessEvent.collect {
-            navController.navigate(NavigationGraph.MAIN) {
-                popUpTo(NavigationGraph.AUTH) {
+            navController.navigate(Screen.ReadingHome.route) {
+                popUpTo(Screen.Splash.route) {
                     inclusive = true
                 }
             }
@@ -153,7 +152,7 @@ fun LoginScreen(
             buttonText = "회원가입",
             buttonType = ButtonTypeEnum.LINE,
             onClick = {
-                navController.navigate(AuthScreen.Register.route)
+                navController.navigate(Screen.Register.route)
             },
         )
     }
