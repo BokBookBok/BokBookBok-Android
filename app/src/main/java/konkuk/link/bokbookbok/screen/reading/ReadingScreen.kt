@@ -101,6 +101,7 @@ fun ReadingScreen(
                 floatingActionButton = {
                     if (uiState.homeData?.status == ReadingApiStatus.READ_COMPLETED) {
                         WriteFAB(
+                            modifier = Modifier.padding(bottom = 85.dp),
                             onClick = {
                                 navController.navigate(Screen.WriteReview.createRoute(bookId = uiState.homeData!!.book.id))
                             },
@@ -194,7 +195,7 @@ private fun ReadingScreenContent(
 
         if (homeData.bestReview != null) {
             ReviewComponent(
-                writer = "독서왕",
+                writer = homeData.bestReview.nickname,
                 content = homeData.bestReview.content,
                 type = ReviewType.BEST,
             )
