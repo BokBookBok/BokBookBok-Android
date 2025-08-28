@@ -10,6 +10,7 @@ import konkuk.link.bokbookbok.data.model.response.BaseResponse
 import konkuk.link.bokbookbok.data.model.response.ReviewWriteResponse
 import konkuk.link.bokbookbok.data.model.response.VoteResponse
 import konkuk.link.bokbookbok.data.model.response.login.LoginResponse
+import konkuk.link.bokbookbok.data.model.response.reading.CurrentBookResponse
 import konkuk.link.bokbookbok.data.model.response.register.RegisterEmailResponse
 import konkuk.link.bokbookbok.data.model.response.register.RegisterNicknameResponse
 import konkuk.link.bokbookbok.data.model.response.register.RegisterResponse
@@ -19,11 +20,29 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface ApiService {
+
+    // Auth
+    @POST("/api/auth/register/email")
+    suspend fun registerEmailDuplicate(
+        @Body request: RegisterEmailRequest,
+    ): BaseResponse<RegisterEmailResponse>
+
+    @POST("/api/auth/register/nickname")
+    suspend fun registerNicknameDuplicate(
+        @Body request: RegisterNicknameRequest,
+    ): BaseResponse<RegisterNicknameResponse>
+
+    @POST("/api/auth/login")
+    suspend fun login(
+        @Body request: LoginRequest,
+    ): BaseResponse<LoginResponse>
+
     @POST("/api/auth/register")
     suspend fun register(
         @Body request: RegisterRequest,
     ): BaseResponse<RegisterResponse>
 
+    // Review
     @POST("/api/reviews/write")
     suspend fun writeReview(
         @Body request: ReviewWriteRequest,
@@ -40,18 +59,7 @@ interface ApiService {
         @Body request: VoteRequest,
     ): BaseResponse<VoteResponse>
 
-    @POST("/api/auth/register/email")
-    suspend fun registerEmailDuplicate(
-        @Body request: RegisterEmailRequest,
-    ): BaseResponse<RegisterEmailResponse>
-
-    @POST("/api/auth/register/nickname")
-    suspend fun registerNicknameDuplicate(
-        @Body request: RegisterNicknameRequest,
-    ): BaseResponse<RegisterNicknameResponse>
-
-    @POST("/api/auth/login")
-    suspend fun login(
-        @Body request: LoginRequest,
-    ): BaseResponse<LoginResponse>
+    // Reading
+    @GET("/api/books/current")
+    suspend fun getCurrentBook(): BaseResponse<CurrentBookResponse>
 }
