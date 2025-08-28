@@ -15,7 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -60,6 +63,7 @@ fun ReadingScreen(
             ReadingScreenContent(
                 modifier = modifier,
                 homeData = uiState.homeData!!,
+                userNickname = uiState.userNickname,
                 onStartReading = viewModel::startReading,
                 onCompleteReading = viewModel::completeReading
             )
@@ -71,6 +75,7 @@ fun ReadingScreen(
 private fun ReadingScreenContent(
     modifier: Modifier = Modifier,
     homeData: ReadingHomeResponse,
+    userNickname: String?,
     onStartReading: () -> Unit,
     onCompleteReading: () -> Unit,
 ) {
@@ -93,11 +98,10 @@ private fun ReadingScreenContent(
                 Text(text = "이번주", style = defaultBokBookBokTypography.subHeader, color = bokBookBokColors.fontLightGray)
                 Text(text = "선정도서", style = defaultBokBookBokTypography.header, color = bokBookBokColors.fontDarkBrown)
             }
+            // todo : 감상쓰기 페이지로 navigation 필요
             ReadingStatusButtonComponent(
                 state = ReadingButtonState.Status(homeData.status),
-                onClick = {
-                    showModal = true
-                },
+                onClick = { showModal = true },
             )
         }
         Column(
@@ -121,48 +125,39 @@ private fun ReadingScreenContent(
             AsyncImage(
                 model = homeData.book.imageUrl,
                 contentDescription = "${homeData.book.title} 책 표지",
-                modifier = modifier
+                modifier = Modifier
                     .size(132.dp, 196.dp)
                     .clip(RoundedCornerShape(8.dp)),
                 contentScale = ContentScale.Crop
             )
-            Text(
-                text = "\"세상 모든 아이들이\n동무가 되기를\"",
-                style = defaultBokBookBokTypography.body,
-                color = bokBookBokColors.fontDarkGray,
-                textAlign = TextAlign.Center,
-            )
+            BookStatusDescription(homeData = homeData, nickname = userNickname)
         }
 
-        homeData.bestReview?.let { bestReview ->
+        if (homeData.bestReview != null) {
             ReviewComponent(
                 writer = "독서왕",
-                content = bestReview.content,
+                content = homeData.bestReview.content,
                 type = ReviewType.BEST,
             )
+        } else {
+            NoBestReviewMessage()
         }
     }
+
     if (showModal) {
         val modalContentData =
             when (homeData.status) {
                 ReadingApiStatus.NOT_STARTED ->
                     ModalContentData(
-                        title = "읽어보기",
-                        message = "독서를\n시작하시겠습니까?",
-                        primaryButtonText = "시작",
-                        secondaryButtonText = "취소",
+                        title = "읽어보기", message = "독서를\n시작하시겠습니까?", primaryButtonText = "시작", secondaryButtonText = "취소",
                         onPrimaryClick = {
                             onStartReading()
                             showModal = false
                         },
                     )
-
                 ReadingApiStatus.READING ->
                     ModalContentData(
-                        title = "독서 완료",
-                        message = "독서를\n완료하시겠습니까?",
-                        primaryButtonText = "완료",
-                        secondaryButtonText = "취소",
+                        title = "독서 완료", message = "독서를\n완료하시겠습니까?", primaryButtonText = "완료", secondaryButtonText = "취소",
                         onPrimaryClick = {
                             onCompleteReading()
                             showModal = false
@@ -185,5 +180,99 @@ private fun ReadingScreenContent(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun BookStatusDescription(
+    homeData: ReadingHomeResponse,
+    nickname: String?,
+) {
+    when (homeData.status) {
+        ReadingApiStatus.NOT_STARTED -> {
+            Text(
+                text = homeData.book.description ?: "해당 도서에 대한 설명이 준비 중이에요",
+                style = defaultBokBookBokTypography.body,
+                textAlign = TextAlign.Center,
+                color = bokBookBokColors.fontDarkGray,
+            )
+        }
+        ReadingApiStatus.READING -> {
+            homeData.record?.let {
+                StatusInfoColumn(
+                    highlightText = "${it.readingDays}일",
+                    normalText = " 째, 독서 중",
+                    subText = "다른 복복이들은 ${it.averageDays}일 동안 읽었어요"
+                )
+            }
+        }
+        ReadingApiStatus.READ_COMPLETED -> {
+            homeData.record?.let {
+                StatusInfoColumn(
+                    highlightText = "${it.readingDays}일",
+                    normalText = " 동안 읽었어요",
+                    subText = "감상을 남겨 함께 토론해보아요"
+                )
+            }
+        }
+        ReadingApiStatus.REVIEWED -> {
+            homeData.myReview?.let {
+                StatusInfoColumn(
+                    highlightText = nickname ?: "회원",
+                    normalText = " 님의 감상",
+                    subText = "\"${it.content}\""
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun StatusInfoColumn(
+    highlightText: String,
+    normalText: String,
+    subText: String
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(
+            text = buildAnnotatedString {
+                withStyle(
+                    style = SpanStyle(color = bokBookBokColors.second)
+                ) {
+                    append(highlightText)
+                }
+                append(normalText)
+            },
+            style = defaultBokBookBokTypography.body,
+            textAlign = TextAlign.Center,
+            color = bokBookBokColors.fontDarkGray,
+        )
+        Text(
+            text = subText,
+            style = defaultBokBookBokTypography.subBody,
+            textAlign = TextAlign.Center,
+            color = bokBookBokColors.fontLightGray,
+        )
+    }
+}
+
+@Composable
+private fun NoBestReviewMessage() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 24.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "아직 등록된 베스트 감상평이 없어요.\n첫 번째 감상을 남겨보는 건 어떨까요?",
+            style = defaultBokBookBokTypography.body,
+            color = bokBookBokColors.fontLightGray,
+            textAlign = TextAlign.Center
+        )
     }
 }
