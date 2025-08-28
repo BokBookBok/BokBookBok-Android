@@ -7,6 +7,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,9 +19,13 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
@@ -46,6 +51,19 @@ fun ReadingScreen(
     viewModel: ReadingViewModel,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.loadInitialData()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     when {
         uiState.isLoading -> {
@@ -66,11 +84,13 @@ fun ReadingScreen(
             Scaffold(
                 containerColor = bokBookBokColors.white,
                 floatingActionButton = {
-                    WriteFAB(
-                        onClick = {
-                            navController.navigate(Screen.WriteReview.createRoute(bookId = uiState.homeData!!.book.id))
-                        },
-                    )
+                    if (uiState.homeData?.status != ReadingApiStatus.REVIEWED) {
+                        WriteFAB(
+                            onClick = {
+                                navController.navigate(Screen.WriteReview.createRoute(bookId = uiState.homeData!!.book.id))
+                            },
+                        )
+                    }
                 },
             ) { paddingValues ->
                 ReadingScreenContent(
@@ -101,7 +121,7 @@ private fun ReadingScreenContent(
         modifier = modifier
             .background(bokBookBokColors.white)
             .fillMaxSize()
-            .padding(start = 28.dp, end = 28.dp),
+            .padding(start = 28.dp, end = 28.dp, bottom = 32.dp),
         verticalArrangement = Arrangement.spacedBy(30.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -274,7 +294,9 @@ private fun StatusInfoColumn(
         )
         Text(
             text = subText,
-            style = defaultBokBookBokTypography.subBody,
+            style = defaultBokBookBokTypography.subBody.copy(
+                lineBreak = LineBreak.Paragraph
+            ),
             textAlign = TextAlign.Center,
             color = bokBookBokColors.fontLightGray,
         )
