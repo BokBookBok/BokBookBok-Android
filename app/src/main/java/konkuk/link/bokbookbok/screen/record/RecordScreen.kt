@@ -96,7 +96,7 @@ fun RecordScreen(modifier: Modifier = Modifier) {
             }
             // todo : 머지하고 주석 풀 것
 //            ReadingStatusButtonComponent(
-//                status = ReadingStatus.TOTAL_BOOKS_READ(26),
+//                status = ReadingButtonState.TotalCount(count = 12),
 //                onClick = {  }
 //            )
         }
