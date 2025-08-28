@@ -4,8 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -17,9 +19,13 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
@@ -27,11 +33,13 @@ import konkuk.link.bokbookbok.component.common.ModalComponent
 import konkuk.link.bokbookbok.component.common.ModalContentData
 import konkuk.link.bokbookbok.component.common.ReviewComponent
 import konkuk.link.bokbookbok.component.common.ReviewType
+import konkuk.link.bokbookbok.component.common.WriteFAB
 import konkuk.link.bokbookbok.component.reading.ReadingButtonState
 import konkuk.link.bokbookbok.component.reading.ReadingStatusButtonComponent
 import konkuk.link.bokbookbok.component.reading.WonGoJiBoard
 import konkuk.link.bokbookbok.data.model.response.reading.ReadingApiStatus
 import konkuk.link.bokbookbok.data.model.response.reading.ReadingHomeResponse
+import konkuk.link.bokbookbok.navigation.Screen
 import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
 import konkuk.link.bokbookbok.util.AppGradientBrush
@@ -43,6 +51,19 @@ fun ReadingScreen(
     viewModel: ReadingViewModel,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.loadInitialData()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     when {
         uiState.isLoading -> {
@@ -60,13 +81,27 @@ fun ReadingScreen(
             }
         }
         uiState.homeData != null -> {
-            ReadingScreenContent(
-                modifier = modifier,
-                homeData = uiState.homeData!!,
-                userNickname = uiState.userNickname,
-                onStartReading = viewModel::startReading,
-                onCompleteReading = viewModel::completeReading
-            )
+            Scaffold(
+                containerColor = bokBookBokColors.white,
+                floatingActionButton = {
+                    if (uiState.homeData?.status == ReadingApiStatus.READ_COMPLETED) {
+                        WriteFAB(
+                            onClick = {
+                                navController.navigate(Screen.WriteReview.createRoute(bookId = uiState.homeData!!.book.id))
+                            },
+                        )
+                    }
+                },
+            ) { paddingValues ->
+                ReadingScreenContent(
+                    modifier = modifier.padding(paddingValues),
+                    navController = navController,
+                    homeData = uiState.homeData!!,
+                    userNickname = uiState.userNickname,
+                    onStartReading = viewModel::startReading,
+                    onCompleteReading = viewModel::completeReading
+                )
+            }
         }
     }
 }
@@ -75,6 +110,7 @@ fun ReadingScreen(
 private fun ReadingScreenContent(
     modifier: Modifier = Modifier,
     homeData: ReadingHomeResponse,
+    navController: NavController,
     userNickname: String?,
     onStartReading: () -> Unit,
     onCompleteReading: () -> Unit,
@@ -83,9 +119,9 @@ private fun ReadingScreenContent(
 
     Column(
         modifier = modifier
-            .fillMaxSize()
             .background(bokBookBokColors.white)
-            .padding(top = 48.dp, start = 28.dp, end = 28.dp, bottom = 32.dp),
+            .fillMaxSize()
+            .padding(start = 28.dp, end = 28.dp, bottom = 32.dp),
         verticalArrangement = Arrangement.spacedBy(30.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -98,10 +134,15 @@ private fun ReadingScreenContent(
                 Text(text = "이번주", style = defaultBokBookBokTypography.subHeader, color = bokBookBokColors.fontLightGray)
                 Text(text = "선정도서", style = defaultBokBookBokTypography.header, color = bokBookBokColors.fontDarkBrown)
             }
-            // todo : 감상쓰기 페이지로 navigation 필요
             ReadingStatusButtonComponent(
                 state = ReadingButtonState.Status(homeData.status),
-                onClick = { showModal = true },
+                onClick = {
+                    if (homeData.status == ReadingApiStatus.READ_COMPLETED) {
+                        navController.navigate(Screen.WriteReview.createRoute(bookId = homeData.book.id))
+                    } else {
+                        showModal = true
+                    }
+                },
             )
         }
         Column(
@@ -253,7 +294,9 @@ private fun StatusInfoColumn(
         )
         Text(
             text = subText,
-            style = defaultBokBookBokTypography.subBody,
+            style = defaultBokBookBokTypography.subBody.copy(
+                lineBreak = LineBreak.Paragraph
+            ),
             textAlign = TextAlign.Center,
             color = bokBookBokColors.fontLightGray,
         )

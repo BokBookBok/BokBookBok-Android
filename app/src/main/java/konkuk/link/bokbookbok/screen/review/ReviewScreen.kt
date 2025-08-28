@@ -67,7 +67,7 @@ fun ReviewScreen(
     }
 
     Scaffold(
-        modifier = Modifier.background(color = bokBookBokColors.white),
+        containerColor = bokBookBokColors.white,
         floatingActionButton = {
             if ((pagerState.currentPage == 0 && uiState.bookReview?.myReview == null) || pagerState.currentPage == 1) {
                 WriteFAB(
