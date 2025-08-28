@@ -28,6 +28,7 @@ data class ModalContentData(
 @Composable
 fun ModalComponent(
     onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier,
     primaryButtonText: String?,
     onPrimaryButtonClick: () -> Unit = {},
     secondaryButtonText: String?,
@@ -39,7 +40,7 @@ fun ModalComponent(
     Dialog(onDismissRequest = onDismissRequest) {
         Column(
             modifier =
-                Modifier
+                modifier
                     .width(336.dp)
                     .height(287.dp)
                     .clip(shape)

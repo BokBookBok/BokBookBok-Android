@@ -3,16 +3,20 @@ package konkuk.link.bokbookbok.screen.record
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,52 +27,70 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import konkuk.link.bokbookbok.component.common.BookInfoCard
 import konkuk.link.bokbookbok.component.common.ModalComponent
+import konkuk.link.bokbookbok.component.reading.ReadingButtonState
+import konkuk.link.bokbookbok.component.reading.ReadingStatusButtonComponent
 import konkuk.link.bokbookbok.component.record.RecordBookComponent
+import konkuk.link.bokbookbok.data.model.response.record.Record
+import konkuk.link.bokbookbok.data.model.response.record.RecordHomeResponse
+import konkuk.link.bokbookbok.navigation.Screen
 import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
-
-data class BookRecord(
-    val id: Int,
-    val date: String,
-    val title: String,
-    val imageUrl: String?,
-    val author: String,
-)
+import konkuk.link.bokbookbok.util.AppGradientBrush
 
 @Composable
-fun RecordScreen(modifier: Modifier = Modifier) {
-    // todo : 실제 서버 데이터로 바꿀 것
-    val bookList =
-        remember {
-            List(11) { i ->
-                BookRecord(
-                    id = i,
-                    date = "${8 - (i / 2)}월 첫째주",
-                    title = listOf("여행의 이유", "아몬드", "불편한 편의점", "달러구트 꿈 백화점", "오래된 미래")[i % 5],
-                    imageUrl = "https://image.aladin.co.kr/product/26/49/cover500/k552736024_1.jpg",
-                    author = listOf("김영하", "손원평", "김호연", "이미예", "헬레나 노르베리호지")[i % 5],
+fun RecordScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController,
+    viewModel: RecordViewModel,
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    when {
+        uiState.isLoading -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        }
+        uiState.errorMessage != null -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(
+                    text = "오류가 발생했습니다: ${uiState.errorMessage}",
+                    style = defaultBokBookBokTypography.body
                 )
             }
         }
+        uiState.recordData != null -> {
+            RecordScreenContent(
+                modifier = modifier,
+                nickname = uiState.userNickname,
+                navController = navController,
+                recordData = uiState.recordData!!
+            )
+        }
+    }
+}
 
-    var selectedBook by remember { mutableStateOf<BookRecord?>(null) }
-
-    val gradientBrush =
-        Brush.verticalGradient(
-            colorStops =
-                arrayOf(
-                    0.1f to bokBookBokColors.backGroundStart,
-                    1.0f to bokBookBokColors.backGroundEnd,
-                ),
-        )
+@Composable
+private fun RecordScreenContent(
+    modifier: Modifier = Modifier,
+    nickname: String?,
+    navController: NavController,
+    recordData: RecordHomeResponse
+) {
+    var selectedBook by remember { mutableStateOf<Record?>(null) }
 
     Column(
         modifier =
-            Modifier
+            modifier
                 .fillMaxSize()
                 .background(bokBookBokColors.white)
                 .padding(top = 48.dp, start = 28.dp, end = 28.dp, bottom = 32.dp),
@@ -84,7 +106,7 @@ fun RecordScreen(modifier: Modifier = Modifier) {
                 verticalArrangement = Arrangement.spacedBy(5.dp),
             ) {
                 Text(
-                    text = "지뿡이 님의",
+                    text = "${nickname} 님의",
                     style = defaultBokBookBokTypography.subHeader,
                     color = bokBookBokColors.fontLightGray,
                 )
@@ -94,11 +116,10 @@ fun RecordScreen(modifier: Modifier = Modifier) {
                     color = bokBookBokColors.fontDarkBrown,
                 )
             }
-            // todo : 머지하고 주석 풀 것
-//            ReadingStatusButtonComponent(
-//                status = ReadingButtonState.TotalCount(count = 12),
-//                onClick = {  }
-//            )
+            ReadingStatusButtonComponent(
+                state = ReadingButtonState.TotalCount(count = recordData.totalCount),
+                onClick = {  }
+            )
         }
 
         Column(
@@ -110,7 +131,7 @@ fun RecordScreen(modifier: Modifier = Modifier) {
                     .clip(RoundedCornerShape(16.dp))
                     .drawBehind {
                         drawRect(color = bokBookBokColors.backGroundBG)
-                        drawRect(brush = gradientBrush)
+                        drawRect(brush = AppGradientBrush)
                     },
         ) {
             LazyVerticalGrid(
@@ -120,41 +141,77 @@ fun RecordScreen(modifier: Modifier = Modifier) {
                 horizontalArrangement = Arrangement.spacedBy(20.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
-                items(bookList, key = { it.id }) { book ->
+                items(recordData.records, key = { it.bookInfoResponse.id }) { record ->
                     RecordBookComponent(
-                        date = book.date,
-                        title = book.title,
-                        bookImageUrl = book.imageUrl,
-                        author = book.author,
+                        date = record.weekLabel,
+                        title = record.bookInfoResponse.title,
+                        bookImageUrl = record.bookInfoResponse.imageUrl,
+                        author = record.bookInfoResponse.author,
                         onClick = {
-                            selectedBook = book
+                            selectedBook = record
                         },
                     )
                 }
             }
         }
     }
+
     if (selectedBook != null) {
         ModalComponent(
             onDismissRequest = { selectedBook = null },
+            modifier = Modifier.height(336.dp),
             primaryButtonText = "감상평",
-            onPrimaryButtonClick = { selectedBook = null },
+            onPrimaryButtonClick = {
+                val bookToNavigate = selectedBook!!
+                selectedBook = null
+                navController.navigate(
+                    Screen.RecordDetail.createRoute(
+                        bookId = bookToNavigate.bookInfoResponse.id,
+                        title = bookToNavigate.bookInfoResponse.title,
+                        weekLabel = bookToNavigate.weekLabel
+                    )
+                )
+            },
             secondaryButtonText = "닫기",
             onSecondaryButtonClick = { selectedBook = null },
         ) { modifier ->
-            Column(
-                modifier = modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                // todo : 실제 독서시간과 해당 컴포넌트로 바꿀 것
-            }
+            RecordDetailModalContent(
+                modifier = modifier
+                    .fillMaxSize(),
+                record = selectedBook!!
+            )
         }
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun RecordScreenPreview() {
-    RecordScreen()
+private fun RecordDetailModalContent(
+    modifier: Modifier = Modifier,
+    record: Record
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize(),
+    ) {
+        BookInfoCard(
+            imageUrl = record.bookInfoResponse.imageUrl,
+            title = record.bookInfoResponse.title,
+            author = record.bookInfoResponse.author
+        )
+        Spacer(modifier = Modifier.height(28.dp))
+        Text(
+            text = buildAnnotatedString {
+                withStyle(
+                    style = SpanStyle(color = bokBookBokColors.fontLightGray)
+                ) {
+                    append("독서 시간  ")
+                }
+                append("${record.readDays}일")
+            },
+            style = defaultBokBookBokTypography.body,
+            textAlign = TextAlign.Center,
+            color = bokBookBokColors.second,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
 }

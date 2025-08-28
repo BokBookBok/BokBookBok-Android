@@ -2,6 +2,8 @@ package konkuk.link.bokbookbok.navigation
 
 import androidx.annotation.DrawableRes
 import konkuk.link.bokbookbok.R
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 sealed class Screen(
     val route: String,
@@ -37,6 +39,17 @@ sealed class Screen(
         title = "기록홈",
         icon = R.drawable.ic_folder_outline_black,
     )
+
+    object RecordDetail : Screen(
+        route = "record_detail/{bookId}/{title}/{weekLabel}",
+        isBottomBarVisible = true
+    ) {
+        fun createRoute(bookId: Int, title: String, weekLabel: String): String {
+            val encodedTitle = URLEncoder.encode(title, StandardCharsets.UTF_8.toString())
+            val encodedWeekLabel = URLEncoder.encode(weekLabel, StandardCharsets.UTF_8.toString())
+            return "record_detail/$bookId/$encodedTitle/$encodedWeekLabel"
+        }
+    }
 
     data object WriteReview : Screen("write_review/{bookId}") {
         fun createRoute(bookId: Int) = "write_review/$bookId"

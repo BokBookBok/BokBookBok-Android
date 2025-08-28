@@ -11,6 +11,7 @@ import konkuk.link.bokbookbok.data.model.response.BaseResponse
 import konkuk.link.bokbookbok.data.model.response.login.LoginResponse
 import konkuk.link.bokbookbok.data.model.response.reading.ChangeReadingStatusResponse
 import konkuk.link.bokbookbok.data.model.response.reading.ReadingHomeResponse
+import konkuk.link.bokbookbok.data.model.response.record.RecordHomeResponse
 import konkuk.link.bokbookbok.data.model.response.register.RegisterEmailResponse
 import konkuk.link.bokbookbok.data.model.response.register.RegisterNicknameResponse
 import konkuk.link.bokbookbok.data.model.response.register.RegisterResponse
@@ -64,18 +65,7 @@ interface ApiService {
         @Path("bookId") bookId: Int,
         @Body request: VoteRequest,
     ): BaseResponse<VoteResponse>
-
-    // Reading
-    @GET("/api/home")
-    suspend fun getReadingHome(): BaseResponse<ReadingHomeResponse>
-
-    @PATCH("/api/books/{bookId}/status")
-    suspend fun patchReadingStatus(
-        @Path("bookId") bookId: Int,
-        @Body request: ChangeReadingStatusRequest,
-    ): BaseResponse<ChangeReadingStatusResponse>
-
-    // Review
+  
     @GET("/api/books/{bookId}")
     suspend fun getBookReviews(
         @Path("bookId") bookId: Int,
@@ -88,9 +78,23 @@ interface ApiService {
 
     @GET("/api/books/current")
     suspend fun getCurrentBook(): BaseResponse<CurrentBook>
-
+  
     @GET("/api/books/{bookId}/status")
     suspend fun getBookStatus(
         @Path("bookId") bookId: Int,
     ): BaseResponse<ChangeReadingStatusResponse>
+
+    // Reading
+    @GET("/api/home")
+    suspend fun getReadingHome(): BaseResponse<ReadingHomeResponse>
+
+    @PATCH("/api/books/{bookId}/status")
+    suspend fun patchReadingStatus(
+        @Path("bookId") bookId: Int,
+        @Body request: ChangeReadingStatusRequest,
+    ): BaseResponse<ChangeReadingStatusResponse>
+
+    // Record
+    @GET("/api/records")
+    suspend fun getRecordHome(): BaseResponse<RecordHomeResponse>
 }

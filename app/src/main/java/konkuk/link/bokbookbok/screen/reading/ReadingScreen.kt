@@ -61,12 +61,17 @@ fun ReadingScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
+    var isFirstResume by remember { mutableStateOf(true) }
 
     DisposableEffect(lifecycleOwner) {
         val observer =
             LifecycleEventObserver { _, event ->
                 if (event == Lifecycle.Event.ON_RESUME) {
-                    viewModel.loadInitialData()
+                    if (isFirstResume) {
+                        isFirstResume = false
+                    } else {
+                        viewModel.loadInitialData()
+                    }
                 }
             }
         lifecycleOwner.lifecycle.addObserver(observer)
