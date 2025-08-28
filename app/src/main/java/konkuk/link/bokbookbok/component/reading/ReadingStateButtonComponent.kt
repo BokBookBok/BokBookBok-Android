@@ -24,10 +24,14 @@ import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
 
 sealed class ReadingButtonState {
-    data class Status(val value: ReadingApiStatus) : ReadingButtonState()
-    data class TotalCount(val count: Int) : ReadingButtonState()
-}
+    data class Status(
+        val value: ReadingApiStatus,
+    ) : ReadingButtonState()
 
+    data class TotalCount(
+        val count: Int,
+    ) : ReadingButtonState()
+}
 
 @Composable
 fun ReadingStatusButtonComponent(

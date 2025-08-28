@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ChangeReadingStatusResponse(
     val bookId: Int,
-    val status: ReadingApiStatus
+    val status: ReadingApiStatus,
 )

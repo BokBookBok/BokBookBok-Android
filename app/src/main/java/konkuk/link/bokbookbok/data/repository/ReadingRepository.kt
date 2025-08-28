@@ -16,7 +16,7 @@ class ReadingRepository(
 
     suspend fun patchStatus(
         bookId: Int,
-        status: ReadingApiStatus
+        status: ReadingApiStatus,
     ): Result<ChangeReadingStatusResponse> {
         val request = ChangeReadingStatusRequest(status)
         return safeApiCall { apiService.patchReadingStatus(bookId, request) }
