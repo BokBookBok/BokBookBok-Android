@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SplashScreen(navController: NavController) {
     val alpha = remember { Animatable(0f) }
-    val offsetY = remember { Animatable(100f) }
+    val offsetY = remember { Animatable(50f) }
 
     val gradientBrush =
         Brush.verticalGradient(
