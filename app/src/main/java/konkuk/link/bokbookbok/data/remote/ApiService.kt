@@ -88,4 +88,9 @@ interface ApiService {
 
     @GET("/api/books/current")
     suspend fun getCurrentBook(): BaseResponse<CurrentBook>
+
+    @GET("/api/books/{bookId}/status")
+    suspend fun getBookStatus(
+        @Path("bookId") bookId: Int,
+    ): BaseResponse<ChangeReadingStatusResponse>
 }

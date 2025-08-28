@@ -3,6 +3,7 @@ package konkuk.link.bokbookbok.data.repository
 import konkuk.link.bokbookbok.data.model.request.review.ReviewWriteRequest
 import konkuk.link.bokbookbok.data.model.request.review.VoteRequest
 import konkuk.link.bokbookbok.data.model.response.ErrorResponse
+import konkuk.link.bokbookbok.data.model.response.reading.ChangeReadingStatusResponse
 import konkuk.link.bokbookbok.data.model.response.review.BookReviewResponse
 import konkuk.link.bokbookbok.data.model.response.review.CurrentBook
 import konkuk.link.bokbookbok.data.model.response.review.LikeResponse
@@ -62,4 +63,6 @@ class ReviewRepository(
     suspend fun postLike(reviewId: Int): Result<LikeResponse> = safeApiCall { apiService.postLike(reviewId) }
 
     suspend fun getCurrentBook(): Result<CurrentBook> = safeApiCall { apiService.getCurrentBook() }
+
+    suspend fun getBookStatus(bookId: Int): Result<ChangeReadingStatusResponse> = safeApiCall { apiService.getBookStatus(bookId) }
 }

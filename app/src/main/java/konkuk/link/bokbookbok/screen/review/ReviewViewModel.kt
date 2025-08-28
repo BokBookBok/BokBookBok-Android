@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import konkuk.link.bokbookbok.data.model.request.review.VoteRequest
+import konkuk.link.bokbookbok.data.model.response.reading.ReadingApiStatus
 import konkuk.link.bokbookbok.data.model.response.review.BookReviewResponse
 import konkuk.link.bokbookbok.data.model.response.review.CurrentBook
 import konkuk.link.bokbookbok.data.model.response.review.VoteResponse
@@ -49,6 +50,7 @@ data class ReviewHomeUiState(
     val bookReview: BookReviewResponse? = null,
     val voteState: VoteState = VoteState.Loading,
     val loadErrorMessage: String? = null,
+    val canVote: Boolean = false,
 )
 
 class ReviewHomeViewModel(
@@ -71,18 +73,22 @@ class ReviewHomeViewModel(
             reviewRepository
                 .getCurrentBook()
                 .onSuccess { book ->
+                    val bookStatusDeferred = async { reviewRepository.getBookStatus(book.id) }
                     val reviewsDeferred = async { reviewRepository.getBookReviews(book.id) }
                     val voteDeferred = async { reviewRepository.getVoteResult(book.id) }
+                    val bookStatusResult = bookStatusDeferred.await()
                     val reviewsResult = reviewsDeferred.await()
                     val voteResult = voteDeferred.await()
 
                     _uiState.update {
+                        val status = bookStatusResult.getOrNull()?.status
                         it.copy(
                             isLoading = false,
                             currentBook = book,
                             bookReview = reviewsResult.getOrNull(),
                             voteState = voteResult.getOrElse { e -> VoteState.Error(e.message ?: "투표 정보 로딩 실패") },
                             loadErrorMessage = if (reviewsResult.isFailure) reviewsResult.exceptionOrNull()?.message else null,
+                            canVote = (status == ReadingApiStatus.READ_COMPLETED || status == ReadingApiStatus.REVIEWED),
                         )
                     }
                 }.onFailure { error ->
@@ -189,6 +195,13 @@ class ReviewHomeViewModel(
 
     fun postVote(option: String) {
         val bookId = uiState.value.currentBook?.id ?: return
+
+        if (!uiState.value.canVote) {
+            viewModelScope.launch {
+                _event.emit(ReviewHomeEvent.ShowToast("책을 다 읽은 후에만 투표할 수 있습니다."))
+            }
+            return
+        }
 
         if (_uiState.value.voteState !is VoteState.CanVote) {
             return

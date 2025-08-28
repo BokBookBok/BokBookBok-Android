@@ -26,6 +26,7 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -33,10 +34,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import konkuk.link.bokbookbok.R
 import konkuk.link.bokbookbok.component.common.BookInfoCard
@@ -51,6 +54,7 @@ import konkuk.link.bokbookbok.navigation.Screen
 import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
 import konkuk.link.bokbookbok.util.AppGradientBrush
+import konkuk.link.bokbookbok.util.BokToast
 import kotlinx.coroutines.launch
 
 @Composable
@@ -60,10 +64,25 @@ fun ReviewScreen(
     viewModel: ReviewHomeViewModel,
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
     val pagerState = rememberPagerState(pageCount = { 2 })
     val coroutineScope = rememberCoroutineScope()
+    val lifecycleOwner = LocalLifecycleOwner.current
 
     val tabs = listOf("감상평", "투표")
+
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { event ->
+            when (event) {
+                is ReviewHomeEvent.ShowToast -> {
+                    BokToast(context).makeText(
+                        message = event.message,
+                        lifecycleOwner = lifecycleOwner,
+                    )
+                }
+            }
+        }
+    }
 
     if (uiState.isLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
