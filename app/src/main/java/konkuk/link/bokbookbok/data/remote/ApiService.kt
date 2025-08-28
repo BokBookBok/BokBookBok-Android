@@ -10,7 +10,7 @@ import konkuk.link.bokbookbok.data.model.response.BaseResponse
 import konkuk.link.bokbookbok.data.model.response.ReviewWriteResponse
 import konkuk.link.bokbookbok.data.model.response.VoteResponse
 import konkuk.link.bokbookbok.data.model.response.login.LoginResponse
-import konkuk.link.bokbookbok.data.model.response.reading.CurrentBookResponse
+import konkuk.link.bokbookbok.data.model.response.reading.ReadingHomeResponse
 import konkuk.link.bokbookbok.data.model.response.register.RegisterEmailResponse
 import konkuk.link.bokbookbok.data.model.response.register.RegisterNicknameResponse
 import konkuk.link.bokbookbok.data.model.response.register.RegisterResponse
@@ -60,6 +60,6 @@ interface ApiService {
     ): BaseResponse<VoteResponse>
 
     // Reading
-    @GET("/api/books/current")
-    suspend fun getCurrentBook(): BaseResponse<CurrentBookResponse>
+    @GET("/api/home")
+    suspend fun getReadingHome(): BaseResponse<ReadingHomeResponse>
 }
