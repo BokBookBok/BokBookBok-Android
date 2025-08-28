@@ -1,7 +1,5 @@
 package konkuk.link.bokbookbok.navigation
 
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -36,7 +34,6 @@ import java.nio.charset.StandardCharsets
 @Composable
 fun AppNavHost(
     navController: NavHostController,
-    // ▼▼▼▼▼ innerPadding 대신 modifier를 받도록 수정 ▼▼▼▼▼
     modifier: Modifier = Modifier,
 ) {
     // repository
