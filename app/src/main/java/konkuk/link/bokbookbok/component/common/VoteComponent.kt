@@ -1,5 +1,6 @@
 package konkuk.link.bokbookbok.component.common
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -49,6 +50,7 @@ fun PollComponent(
         modifier =
             Modifier
                 .fillMaxWidth()
+                .animateContentSize(animationSpec = tween(durationMillis = 300))
                 .background(bokBookBokColors.white, shape = RoundedCornerShape(20.dp))
                 .border(1.dp, bokBookBokColors.borderLightGray, shape = RoundedCornerShape(20.dp))
                 .padding(horizontal = 12.dp, vertical = 20.dp),
@@ -61,12 +63,14 @@ fun PollComponent(
         )
 
         Column {
-            Text(
-                text = option1Text,
-                style = defaultBokBookBokTypography.subBody,
-                color = if (isVoted) bokBookBokColors.fontDarkGray else Color.Transparent,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
+            if (isVoted) {
+                Text(
+                    text = option1Text,
+                    style = defaultBokBookBokTypography.subBody,
+                    color = bokBookBokColors.fontDarkGray,
+                    modifier = Modifier.padding(bottom = 8.dp),
+                )
+            }
             PollOptionItem(
                 optionText = option1Text,
                 percentage = optionA?.percentage ?: 0.0,
@@ -80,13 +84,15 @@ fun PollComponent(
             )
         }
 
-        Column() {
-            Text(
-                text = option2Text,
-                style = defaultBokBookBokTypography.subBody,
-                color = if (isVoted) bokBookBokColors.fontDarkGray else Color.Transparent,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
+        Column {
+            if (isVoted) {
+                Text(
+                    text = option2Text,
+                    style = defaultBokBookBokTypography.subBody,
+                    color = bokBookBokColors.fontDarkGray,
+                    modifier = Modifier.padding(bottom = 8.dp),
+                )
+            }
             PollOptionItem(
                 optionText = option2Text,
                 percentage = optionB?.percentage ?: 0.0,
@@ -113,7 +119,7 @@ private fun PollOptionItem(
     val animatedPercentage by animateFloatAsState(
         targetValue = if (isVoted) (percentage / 100.0).toFloat() else 0f,
         animationSpec = tween(durationMillis = 1000),
-        label = "percentageAnimation"
+        label = "percentageAnimation",
     )
 
     val backgroundColor =
