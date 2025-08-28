@@ -69,7 +69,7 @@ fun PollComponent(
 
         PollOptionItem(
             text = option1Text,
-            percentage = optionA?.percentage ?: 0,
+            percentage = optionA?.percentage ?: 0.0,
             isVoted = isVoted,
             isSelectedOption = true,
             onClick = {
@@ -81,7 +81,7 @@ fun PollComponent(
 
         PollOptionItem(
             text = option2Text,
-            percentage = optionB?.percentage ?: 0,
+            percentage = optionB?.percentage ?: 0.0,
             isVoted = isVoted,
             isSelectedOption = false,
             onClick = {
@@ -104,13 +104,13 @@ fun PollComponent(
 @Composable
 private fun PollOptionItem(
     text: String,
-    percentage: Int,
+    percentage: Double,
     isVoted: Boolean,
     isSelectedOption: Boolean,
     onClick: () -> Unit,
 ) {
     val animatedPercentage by animateFloatAsState(
-        targetValue = if (isVoted) percentage / 100f else 0f,
+        targetValue = if (isVoted) (percentage / 100f).toFloat() else 0f,
         animationSpec = tween(durationMillis = 1000),
     )
 
@@ -185,8 +185,8 @@ fun PollComponentPreview() {
                 question = question,
                 voteResult =
                     listOf(
-                        VoteResult(option = "A", text = option1Text, count = 83, percentage = 83),
-                        VoteResult(option = "B", text = option2Text, count = 17, percentage = 17),
+                        VoteResult(option = "A", text = option1Text, count = 83, percentage = 83.0),
+                        VoteResult(option = "B", text = option2Text, count = 17, percentage = 17.0),
                     ),
                 myVote = option,
             )
@@ -222,8 +222,8 @@ fun PollComponentVotedPreview() {
             question = question,
             voteResult =
                 listOf(
-                    VoteResult(option = "A", text = option1Text, count = 67, percentage = 67),
-                    VoteResult(option = "B", text = option2Text, count = 33, percentage = 33),
+                    VoteResult(option = "A", text = option1Text, count = 67, percentage = 67.0),
+                    VoteResult(option = "B", text = option2Text, count = 33, percentage = 33.0),
                 ),
             myVote = "A",
         )
