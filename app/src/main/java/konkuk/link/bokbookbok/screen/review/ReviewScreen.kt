@@ -84,6 +84,7 @@ fun ReviewScreen(
         }
     }
 
+
     if (uiState.isLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
@@ -96,6 +97,7 @@ fun ReviewScreen(
         floatingActionButton = {
             if (uiState.bookReview?.myReview == null) {
                 WriteFAB(
+                    modifier = Modifier.padding(bottom = 85.dp),
                     onClick = {
                         uiState.currentBook?.id?.let { bookId ->
                             navController.navigate(Screen.WriteReview.createRoute(bookId = bookId))
@@ -213,6 +215,7 @@ fun ReviewContent(
         bottom = contentPadding.calculateBottomPadding() + 120.dp
     )
 
+
     LazyColumn(
         modifier =
             Modifier
@@ -221,24 +224,42 @@ fun ReviewContent(
         contentPadding = finalContentPadding,
         verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
     ) {
-        bookReview.myReview?.let { myReview ->
+        if (bookReview.myReview == null && bookReview.otherReviews.isEmpty()) {
             item {
+                Box(
+                    modifier = Modifier
+                        .fillParentMaxSize()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = "아직 작성된 감상평이 없어요.\n독서 완료 후, 첫 번째 감상평을 남겨보세요!",
+                        style = defaultBokBookBokTypography.body,
+                        color = bokBookBokColors.fontLightGray,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            }
+        } else {
+            bookReview.myReview?.let { myReview ->
+                item {
+                    ReviewComponent(
+                        writer = myReview.nickname,
+                        content = myReview.content,
+                        type = ReviewType.MYREVIEW,
+                        onIconClick = { onLikeClick(myReview.reviewId) },
+                    )
+                }
+            }
+
+            items(bookReview.otherReviews) { review ->
                 ReviewComponent(
-                    writer = myReview.nickname,
-                    content = myReview.content,
-                    type = ReviewType.MYREVIEW,
-                    onIconClick = { onLikeClick(myReview.reviewId) },
+                    writer = review.nickname,
+                    content = review.content,
+                    type = ReviewType.OTHERS(isLiked = review.liked),
+                    onIconClick = { onLikeClick(review.reviewId) },
                 )
             }
-        }
-
-        items(bookReview.otherReviews) { review ->
-            ReviewComponent(
-                writer = review.nickname,
-                content = review.content,
-                type = ReviewType.OTHERS(isLiked = review.liked),
-                onIconClick = { onLikeClick(review.reviewId) },
-            )
         }
     }
 }
@@ -340,7 +361,7 @@ fun VoteNotCreatedView() {
             Modifier
                 .fillMaxSize()
                 .background(brush = AppGradientBrush)
-                .padding(top = 20.dp, start = 69.dp, end = 69.dp, bottom = 10.dp),
+                .padding(start = 69.dp, end = 69.dp, bottom = 100.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {

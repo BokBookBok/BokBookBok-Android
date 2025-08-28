@@ -134,23 +134,37 @@ private fun RecordScreenContent(
                         drawRect(brush = AppGradientBrush)
                     },
         ) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(24.dp),
-                horizontalArrangement = Arrangement.spacedBy(20.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp),
-            ) {
-                items(recordData.records, key = { it.bookInfoResponse.id }) { record ->
-                    RecordBookComponent(
-                        date = record.weekLabel,
-                        title = record.bookInfoResponse.title,
-                        bookImageUrl = record.bookInfoResponse.imageUrl,
-                        author = record.bookInfoResponse.author,
-                        onClick = {
-                            selectedBook = record
-                        },
+            if (recordData.records.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = "아직 기록된 독서 기록이 없어요.",
+                        style = defaultBokBookBokTypography.body,
+                        color = bokBookBokColors.fontLightGray,
+                        textAlign = TextAlign.Center,
                     )
+                }
+            } else {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(24.dp),
+                    horizontalArrangement = Arrangement.spacedBy(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp),
+                ) {
+                    items(recordData.records, key = { it.bookInfoResponse.id }) { record ->
+                        RecordBookComponent(
+                            date = record.weekLabel,
+                            title = record.bookInfoResponse.title,
+                            bookImageUrl = record.bookInfoResponse.imageUrl,
+                            author = record.bookInfoResponse.author,
+                            onClick = {
+                                selectedBook = record
+                            },
+                        )
+                    }
                 }
             }
         }
