@@ -7,6 +7,7 @@ import konkuk.link.bokbookbok.data.model.request.login.LoginRequest
 import konkuk.link.bokbookbok.data.model.response.login.LoginResponse
 import konkuk.link.bokbookbok.data.repository.AuthRepository
 import konkuk.link.bokbookbok.util.TokenManager
+import konkuk.link.bokbookbok.util.UserManager
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -44,10 +45,12 @@ class LoginViewModel(
                 .onSuccess { response: LoginResponse ->
                     val accessToken = response.jwtToken.accessToken
                     TokenManager.saveAccessToken(accessToken)
+                    val nickname = response.nickname
+                    UserManager.saveNickname(nickname)
                     _loginErrorMessage.value = null
                     _loginSuccessEvent.emit(Unit)
                 }.onFailure { error ->
-                    _loginErrorMessage.value = error.message
+                    _loginErrorMessage.value = "등록되지 않은 아이디거나 잘못 입력했습니다."
                 }
         }
     }

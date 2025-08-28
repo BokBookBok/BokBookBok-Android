@@ -5,5 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class LoginResponse(
     val userId: Int,
+    val nickname: String,
     val jwtToken: JwtToken,
 )
