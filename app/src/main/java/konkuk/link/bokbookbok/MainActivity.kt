@@ -42,6 +42,7 @@ class MainActivity : ComponentActivity() {
                         Screen.ReadingHome,
                         Screen.ReviewHome,
                         Screen.RecordHome,
+                        Screen.RecordDetail,
                         Screen.WriteReview,
                         Screen.BookRecordReview,
                     )

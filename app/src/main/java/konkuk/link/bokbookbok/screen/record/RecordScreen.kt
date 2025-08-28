@@ -38,11 +38,10 @@ import konkuk.link.bokbookbok.component.common.BookInfoCard
 import konkuk.link.bokbookbok.component.common.ModalComponent
 import konkuk.link.bokbookbok.component.reading.ReadingButtonState
 import konkuk.link.bokbookbok.component.reading.ReadingStatusButtonComponent
-import konkuk.link.bokbookbok.component.reading.WonGoJiBoard
 import konkuk.link.bokbookbok.component.record.RecordBookComponent
-import konkuk.link.bokbookbok.data.model.response.record.BookInfoResponse
 import konkuk.link.bokbookbok.data.model.response.record.Record
 import konkuk.link.bokbookbok.data.model.response.record.RecordHomeResponse
+import konkuk.link.bokbookbok.navigation.Screen
 import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
 import konkuk.link.bokbookbok.util.AppGradientBrush
@@ -162,7 +161,17 @@ private fun RecordScreenContent(
             onDismissRequest = { selectedBook = null },
             modifier = Modifier.height(336.dp),
             primaryButtonText = "감상평",
-            onPrimaryButtonClick = { selectedBook = null },
+            onPrimaryButtonClick = {
+                val bookToNavigate = selectedBook!!
+                selectedBook = null
+                navController.navigate(
+                    Screen.RecordDetail.createRoute(
+                        bookId = bookToNavigate.bookInfoResponse.id,
+                        title = bookToNavigate.bookInfoResponse.title,
+                        weekLabel = bookToNavigate.weekLabel
+                    )
+                )
+            },
             secondaryButtonText = "닫기",
             onSecondaryButtonClick = { selectedBook = null },
         ) { modifier ->
