@@ -19,36 +19,32 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import konkuk.link.bokbookbok.R
+import konkuk.link.bokbookbok.data.model.response.reading.ReadingApiStatus
 import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
 
-sealed class ReadingStatus {
-    object BEFORE_READING : ReadingStatus() // 독서 전
-
-    object IN_PROGRESS : ReadingStatus() // 독서 중
-
-    object COMPLETED : ReadingStatus() // 독서 완료
-
-    object REVIEWED : ReadingStatus() // 리뷰 완료
-
-    data class TOTAL_BOOKS_READ(
-        val count: Int,
-    ) : ReadingStatus() // 총 읽은 권수 (데이터 포함)
+sealed class ReadingButtonState {
+    data class Status(val value: ReadingApiStatus) : ReadingButtonState()
+    data class TotalCount(val count: Int) : ReadingButtonState()
 }
+
 
 @Composable
 fun ReadingStatusButtonComponent(
-    status: ReadingStatus,
+    state: ReadingButtonState,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val (titleText, backgroundColor) =
-        when (status) {
-            ReadingStatus.BEFORE_READING -> "읽어보기" to bokBookBokColors.green
-            ReadingStatus.IN_PROGRESS -> "읽기완료" to bokBookBokColors.second
-            ReadingStatus.COMPLETED -> "감상쓰기" to bokBookBokColors.main
-            ReadingStatus.REVIEWED -> "감상완료" to bokBookBokColors.blue
-            is ReadingStatus.TOTAL_BOOKS_READ -> "총 ${status.count}권" to bokBookBokColors.green
+        when (state) {
+            is ReadingButtonState.Status ->
+                when (state.value) {
+                    ReadingApiStatus.NOT_STARTED -> "읽어보기" to bokBookBokColors.green
+                    ReadingApiStatus.READING -> "읽기완료" to bokBookBokColors.second
+                    ReadingApiStatus.READ_COMPLETED -> "감상쓰기" to bokBookBokColors.main
+                    ReadingApiStatus.REVIEWED -> "감상완료" to bokBookBokColors.blue
+                }
+            is ReadingButtonState.TotalCount -> "총 ${state.count}권" to bokBookBokColors.green
         }
 
     Button(
