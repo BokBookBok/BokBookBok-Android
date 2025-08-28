@@ -12,7 +12,7 @@ object UserManager {
     private lateinit var sharedPreferences: SharedPreferences
 
     fun init(context: Context) {
-        sharedPreferences = context.getSharedPreferences(UserManager.PREFS_NICKNAME, Context.MODE_PRIVATE)
+        sharedPreferences = context.getSharedPreferences(PREFS_NICKNAME, Context.MODE_PRIVATE)
     }
 
     fun saveNickname(nickname: String) {
