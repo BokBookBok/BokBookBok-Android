@@ -58,10 +58,10 @@ fun RecordDetailScreen(
                 CircularProgressIndicator()
             }
         }
-        uiState.errorMessage != null -> {
+        uiState.loadErrorMessage != null -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
-                    text = "오류가 발생했습니다: ${uiState.errorMessage}",
+                    text = "오류가 발생했습니다: ${uiState.loadErrorMessage}",
                     style = defaultBokBookBokTypography.body
                 )
             }
