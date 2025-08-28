@@ -1,8 +1,11 @@
 package konkuk.link.bokbookbok.screen.review
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import konkuk.link.bokbookbok.data.model.request.review.VoteRequest
 import konkuk.link.bokbookbok.data.model.response.reading.ReadingApiStatus
 import konkuk.link.bokbookbok.data.model.response.review.BookReviewResponse
@@ -55,6 +58,7 @@ data class ReviewHomeUiState(
 
 class ReviewHomeViewModel(
     private val reviewRepository: ReviewRepository,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ReviewHomeUiState())
     val uiState = _uiState.asStateFlow()
@@ -63,7 +67,13 @@ class ReviewHomeViewModel(
     val event = _event.asSharedFlow()
 
     init {
-        loadInitialData()
+        val bookIdFromNav: Int? = savedStateHandle.get<Int>("bookId")
+        if (bookIdFromNav != null && bookIdFromNav != -1) {
+            fetchReviews(bookIdFromNav)
+            fetchVoteResult(bookIdFromNav)
+        } else {
+            loadInitialData()
+        }
     }
 
     fun loadInitialData() {
@@ -116,17 +126,14 @@ class ReviewHomeViewModel(
         }
     }
 
-    private fun fetchReviews(bookId: Int) {
+    fun fetchReviews(bookId: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             reviewRepository
                 .getBookReviews(bookId)
                 .onSuccess { responseData ->
                     _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            bookReview = responseData,
-                        )
+                        it.copy(isLoading = false, bookReview = responseData)
                     }
                 }.onFailure { error ->
                     _uiState.update {
@@ -139,7 +146,7 @@ class ReviewHomeViewModel(
         }
     }
 
-    private fun fetchVoteResult(bookId: Int) {
+    fun fetchVoteResult(bookId: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(voteState = VoteState.Loading) }
             reviewRepository
@@ -223,10 +230,14 @@ class ReviewHomeViewModel(
 class ReviewHomeViewModelFactory(
     private val reviewRepository: ReviewRepository,
 ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(
+        modelClass: Class<T>,
+        extras: CreationExtras
+    ): T {
         if (modelClass.isAssignableFrom(ReviewHomeViewModel::class.java)) {
+            val savedStateHandle = extras.createSavedStateHandle()
             @Suppress("UNCHECKED_CAST")
-            return ReviewHomeViewModel(reviewRepository) as T
+            return ReviewHomeViewModel(reviewRepository, savedStateHandle) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
