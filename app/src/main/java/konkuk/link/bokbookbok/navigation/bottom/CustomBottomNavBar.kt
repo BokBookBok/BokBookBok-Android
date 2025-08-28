@@ -34,18 +34,18 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import konkuk.link.bokbookbok.navigation.Screen
 import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
 import konkuk.link.bokbookbok.util.topSemiCircleShadow
 
 @Composable
 fun CustomBottomNavBar(navController: NavController) {
-    val items =
-        listOf(
-            BottomNavItem.Review,
-            BottomNavItem.Reading,
-            BottomNavItem.Record,
-        )
+    val items = listOf(
+        Screen.ReviewHome,
+        Screen.ReadingHome,
+        Screen.RecordHome
+    )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -73,7 +73,7 @@ fun CustomBottomNavBar(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 items.forEach { item ->
-                    if (item.route == BottomNavItem.Reading.route) {
+                    if (item.route == Screen.ReadingHome.route) {
                         Column(
                             modifier =
                                 Modifier
@@ -85,7 +85,7 @@ fun CustomBottomNavBar(navController: NavController) {
                         ) {
                             Spacer(modifier = Modifier.height(24.dp))
                             Text(
-                                text = item.title,
+                                text = item.title ?: "",
                                 style = defaultBokBookBokTypography.subBody,
                                 color = if (currentRoute == item.route) bokBookBokColors.fontDarkBrown else Color.Gray,
                             )
@@ -109,30 +109,30 @@ fun CustomBottomNavBar(navController: NavController) {
                     .topSemiCircleShadow(elevation = 8.dp)
                     .background(color = bokBookBokColors.white, shape = CircleShape)
                     .clip(CircleShape)
-                    .clickable { navigateTo(navController, BottomNavItem.Reading.route) },
+                    .clickable { navigateTo(navController, Screen.ReadingHome.route) },
             contentAlignment = Alignment.Center,
         ) {
-            Icon(
-                painter = painterResource(id = BottomNavItem.Reading.icon),
-                contentDescription = BottomNavItem.Reading.title,
-                modifier =
-                    Modifier
+            Screen.ReadingHome.icon?.let { iconId ->
+                Icon(
+                    painter = painterResource(id = iconId),
+                    contentDescription = Screen.ReadingHome.title,
+                    modifier = Modifier
                         .padding(10.dp)
                         .size(48.dp),
-                tint = Color.Unspecified,
-            )
+                    tint = Color.Unspecified,
+                )
+            }
         }
     }
 }
 
 @Composable
 fun RowScope.StandardNavItem(
-    item: BottomNavItem,
+    item: Screen,
     isSelected: Boolean,
     onClick: () -> Unit,
 ) {
     val contentColor = if (isSelected) bokBookBokColors.fontDarkBrown else Color.Gray
-    val icon = if (isSelected) item.icon else item.icon
 
     Column(
         modifier =
@@ -143,28 +143,29 @@ fun RowScope.StandardNavItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Icon(
-            painter = painterResource(id = icon),
-            contentDescription = item.title,
-            modifier =
-                Modifier
-                    .padding(top = 10.dp, start = 20.dp, end = 20.dp)
-                    .size(24.dp),
-            tint = contentColor,
-        )
+        item.icon?.let {
+            Icon(
+                painter = painterResource(id = item.icon),
+                contentDescription = item.title,
+                modifier =
+                    Modifier
+                        .padding(top = 10.dp, start = 20.dp, end = 20.dp)
+                        .size(24.dp),
+                tint = contentColor,
+            )
+        }
         Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = item.title,
-            style = defaultBokBookBokTypography.subBody,
-            color = contentColor,
-        )
+        item.title?.let {
+            Text(
+                text = it,
+                style = defaultBokBookBokTypography.subBody,
+                color = contentColor,
+            )
+        }
     }
 }
 
-fun navigateTo(
-    navController: NavController,
-    route: String,
-) {
+private fun navigateTo(navController: NavController, route: String) {
     navController.navigate(route) {
         popUpTo(navController.graph.findStartDestination().id) {
             saveState = true
