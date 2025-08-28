@@ -1,9 +1,12 @@
 package konkuk.link.bokbookbok.data.repository
 
-import konkuk.link.bokbookbok.data.model.request.ReviewWriteRequest
-import konkuk.link.bokbookbok.data.model.request.VoteRequest
-import konkuk.link.bokbookbok.data.model.response.ReviewWriteResponse
-import konkuk.link.bokbookbok.data.model.response.VoteResponse
+import konkuk.link.bokbookbok.data.model.request.review.ReviewWriteRequest
+import konkuk.link.bokbookbok.data.model.request.review.VoteRequest
+import konkuk.link.bokbookbok.data.model.response.review.BookReviewResponse
+import konkuk.link.bokbookbok.data.model.response.review.CurrentBook
+import konkuk.link.bokbookbok.data.model.response.review.LikeResponse
+import konkuk.link.bokbookbok.data.model.response.review.ReviewWriteResponse
+import konkuk.link.bokbookbok.data.model.response.review.VoteResponse
 import konkuk.link.bokbookbok.data.remote.ApiService
 
 class ReviewRepository(
@@ -23,4 +26,10 @@ class ReviewRepository(
         safeApiCall {
             apiService.postVote(bookId, request)
         }
+
+    suspend fun getBookReviews(bookId: Int): Result<BookReviewResponse> = safeApiCall { apiService.getBookReviews(bookId) }
+
+    suspend fun postLike(reviewId: Int): Result<LikeResponse> = safeApiCall { apiService.postLike(reviewId) }
+
+    suspend fun getCurrentBook(): Result<CurrentBook> = safeApiCall { apiService.getCurrentBook() }
 }

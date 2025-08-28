@@ -64,8 +64,8 @@ fun ReviewWriteScreen(
     Column(
         modifier =
             Modifier
-                .fillMaxSize()
                 .background(bokBookBokColors.white)
+                .fillMaxSize()
                 .padding(horizontal = 28.dp, vertical = 12.dp),
     ) {
         ReviewWriteTopBar(
@@ -76,11 +76,10 @@ fun ReviewWriteScreen(
             isPostEnabled = reviewText.isNotBlank() && uiState.postState !is ReviewWritePostState.Loading,
         )
         Spacer(modifier = Modifier.height(21.dp))
-        // TODO: 서버에 책 정보 받아오기 구현
         BookInfoCard(
-            imageUrl = "https://placehold.co/120x160/F5C54D/FFFFFF?text=Book",
-            title = "데일 카네기 인간관계론",
-            author = "데일 카네기",
+            imageUrl = uiState.currentBook?.imageUrl ?: "https://kuku-keke.com/wp-content/uploads/2020/05/2695_3.png",
+            title = uiState.currentBook?.title ?: "",
+            author = uiState.currentBook?.author ?: "",
         )
         Spacer(modifier = Modifier.height(21.dp))
         ReviewWriteTextField(
