@@ -41,11 +41,12 @@ import konkuk.link.bokbookbok.util.topSemiCircleShadow
 
 @Composable
 fun CustomBottomNavBar(navController: NavController) {
-    val items = listOf(
-        Screen.ReviewHome,
-        Screen.ReadingHome,
-        Screen.RecordHome
-    )
+    val items =
+        listOf(
+            Screen.ReviewHome,
+            Screen.ReadingHome,
+            Screen.RecordHome,
+        )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -116,9 +117,10 @@ fun CustomBottomNavBar(navController: NavController) {
                 Icon(
                     painter = painterResource(id = iconId),
                     contentDescription = Screen.ReadingHome.title,
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .size(48.dp),
+                    modifier =
+                        Modifier
+                            .padding(10.dp)
+                            .size(48.dp),
                     tint = Color.Unspecified,
                 )
             }
@@ -165,7 +167,10 @@ fun RowScope.StandardNavItem(
     }
 }
 
-private fun navigateTo(navController: NavController, route: String) {
+private fun navigateTo(
+    navController: NavController,
+    route: String,
+) {
     navController.navigate(route) {
         popUpTo(navController.graph.findStartDestination().id) {
             saveState = true

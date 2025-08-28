@@ -12,7 +12,7 @@ import androidx.navigation.NavController
 fun ReviewScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    viewModel : ReviewHomeViewModel
+    viewModel: ReviewHomeViewModel,
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),

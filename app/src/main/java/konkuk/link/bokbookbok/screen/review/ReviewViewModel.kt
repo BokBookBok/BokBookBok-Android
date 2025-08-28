@@ -1,15 +1,9 @@
 package konkuk.link.bokbookbok.screen.review
 
-import android.os.Bundle
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.savedstate.SavedStateRegistryOwner
-import konkuk.link.bokbookbok.data.model.request.ReviewWriteRequest
 import konkuk.link.bokbookbok.data.model.request.VoteRequest
-import konkuk.link.bokbookbok.data.model.response.ReviewWriteResponse
 import konkuk.link.bokbookbok.data.model.response.VoteResponse
 import konkuk.link.bokbookbok.data.repository.ReviewRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,8 +14,14 @@ import kotlin.jvm.java
 
 sealed interface VoteState {
     object Loading : VoteState
-    data class Success(val voteData: VoteResponse) : VoteState
-    data class Error(val message: String) : VoteState
+
+    data class Success(
+        val voteData: VoteResponse,
+    ) : VoteState
+
+    data class Error(
+        val message: String,
+    ) : VoteState
 }
 
 // 감상홈 화면 전체의 상태를 나타내는 데이터 클래스
@@ -29,14 +29,12 @@ data class ReviewHomeUiState(
     val isReviewLoading: Boolean = true,
     // val reviews: List<Review> = emptyList(),
     val voteState: VoteState = VoteState.Loading, // 투표 상태를 여기에 포함
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
 )
 
-
 class ReviewHomeViewModel(
-    private val reviewRepository: ReviewRepository
+    private val reviewRepository: ReviewRepository,
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(ReviewHomeUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -61,11 +59,11 @@ class ReviewHomeViewModel(
     private fun fetchVoteResult() {
         viewModelScope.launch {
             _uiState.update { it.copy(voteState = VoteState.Loading) }
-            reviewRepository.getVoteResult(featuredBookId)
+            reviewRepository
+                .getVoteResult(featuredBookId)
                 .onSuccess { voteData ->
                     _uiState.update { it.copy(voteState = VoteState.Success(voteData)) }
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     _uiState.update { it.copy(voteState = VoteState.Error(error.message ?: "투표 정보 로딩 실패")) }
                 }
         }
@@ -97,17 +95,18 @@ class ReviewHomeViewModel(
     fun postVote(option: String) {
         val currentVoteState = _uiState.value.voteState
         if (currentVoteState is VoteState.Loading ||
-            (currentVoteState is VoteState.Success && currentVoteState.voteData.myVote != null)) {
+            (currentVoteState is VoteState.Success && currentVoteState.voteData.myVote != null)
+        ) {
             return
         }
 
         viewModelScope.launch {
             val request = VoteRequest(option = option)
-            reviewRepository.postVote(featuredBookId, request)
+            reviewRepository
+                .postVote(featuredBookId, request)
                 .onSuccess { updatedVoteData ->
                     _uiState.update { it.copy(voteState = VoteState.Success(updatedVoteData)) }
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     _uiState.update { it.copy(voteState = VoteState.Error(error.message ?: "투표 실패")) }
                 }
         }
@@ -115,7 +114,7 @@ class ReviewHomeViewModel(
 }
 
 class ReviewHomeViewModelFactory(
-    private val reviewRepository: ReviewRepository
+    private val reviewRepository: ReviewRepository,
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ReviewHomeViewModel::class.java)) {
@@ -125,4 +124,3 @@ class ReviewHomeViewModelFactory(
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
-

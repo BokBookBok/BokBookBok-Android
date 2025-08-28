@@ -39,7 +39,7 @@ fun AppNavHost(
     NavHost(
         navController = navController,
         startDestination = Screen.Splash.route,
-        modifier = Modifier.padding(innerPadding)
+        modifier = Modifier.padding(innerPadding),
     ) {
         composable(route = Screen.Splash.route) {
             SplashScreen(navController = navController)
@@ -52,7 +52,7 @@ fun AppNavHost(
             val factory = remember { RegisterViewModelFactory(authRepository) }
             RegisterScreen(
                 navController = navController,
-                factory = factory
+                factory = factory,
             )
         }
 
@@ -60,7 +60,7 @@ fun AppNavHost(
             val factory = remember { ReviewHomeViewModelFactory(reviewRepository) }
             ReviewScreen(
                 navController = navController,
-                viewModel = viewModel(factory = factory)
+                viewModel = viewModel(factory = factory),
             )
         }
         composable(route = Screen.ReadingHome.route) {
@@ -74,15 +74,14 @@ fun AppNavHost(
             RecordScreen()
         }
 
-
         composable(
             route = Screen.WriteReview.route,
-            arguments = listOf(navArgument("bookId") { type = NavType.IntType })
+            arguments = listOf(navArgument("bookId") { type = NavType.IntType }),
         ) {
             val factory = remember { ReviewWriteViewModelFactory(reviewRepository) }
             ReviewWriteScreen(
                 navController = navController,
-                factory = factory
+                factory = factory,
             )
         }
         composable(route = Screen.BookRecordReview.route) {

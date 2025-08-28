@@ -5,8 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -28,22 +26,24 @@ class MainActivity : ComponentActivity() {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
 
-                val screens = listOf(
-                    Screen.Splash,
-                    Screen.Login,
-                    Screen.Register,
-                    Screen.Admin,
-                    Screen.ReadingHome,
-                    Screen.ReviewHome,
-                    Screen.RecordHome,
-                    Screen.WriteReview,
-                    Screen.BookRecordReview
-                )
+                val screens =
+                    listOf(
+                        Screen.Splash,
+                        Screen.Login,
+                        Screen.Register,
+                        Screen.Admin,
+                        Screen.ReadingHome,
+                        Screen.ReviewHome,
+                        Screen.RecordHome,
+                        Screen.WriteReview,
+                        Screen.BookRecordReview,
+                    )
 
-                val currentScreen = screens.find {
-                    val routePattern = it.route.split('/').first()
-                    currentDestination?.route?.startsWith(routePattern) == true
-                }
+                val currentScreen =
+                    screens.find {
+                        val routePattern = it.route.split('/').first()
+                        currentDestination?.route?.startsWith(routePattern) == true
+                    }
 
                 Scaffold(
                     bottomBar = {
@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
                         ) {
                             CustomBottomNavBar(navController = navController)
                         }
-                    }
+                    },
                 ) { innerPadding ->
                     AppNavHost(navController = navController, innerPadding = innerPadding)
                 }

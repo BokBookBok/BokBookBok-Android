@@ -15,9 +15,14 @@ import kotlinx.coroutines.launch
 
 sealed interface ReviewWritePostState {
     object Idle : ReviewWritePostState
+
     object Loading : ReviewWritePostState
+
     object Success : ReviewWritePostState
-    data class Error(val message: String) : ReviewWritePostState
+
+    data class Error(
+        val message: String,
+    ) : ReviewWritePostState
 }
 
 data class ReviewWriteUiState(
@@ -28,14 +33,12 @@ class ReviewWriteViewModel( // 이름 변경
     private val reviewRepository: ReviewRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-
     private val bookId: Int = savedStateHandle.get<Int>("bookId") ?: -1
 
     private val _uiState = MutableStateFlow(ReviewWriteUiState())
     val uiState = _uiState.asStateFlow()
 
     fun postReview(content: String) {
-
         if (bookId == -1) {
             _uiState.update { it.copy(postState = ReviewWritePostState.Error("책 정보가 올바르지 않습니다.")) }
             return
@@ -58,9 +61,12 @@ class ReviewWriteViewModel( // 이름 변경
 }
 
 class ReviewWriteViewModelFactory(
-    private val reviewRepository: ReviewRepository
+    private val reviewRepository: ReviewRepository,
 ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
+    override fun <T : ViewModel> create(
+        modelClass: Class<T>,
+        extras: CreationExtras,
+    ): T {
         if (modelClass.isAssignableFrom(ReviewWriteViewModel::class.java)) {
             val savedStateHandle = extras.createSavedStateHandle()
             @Suppress("UNCHECKED_CAST")

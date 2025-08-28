@@ -42,7 +42,6 @@ fun ReviewWriteScreen(
     navController: NavController,
     factory: ReviewWriteViewModelFactory,
 ) {
-
     val viewModel: ReviewWriteViewModel = viewModel(factory = factory)
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -74,7 +73,7 @@ fun ReviewWriteScreen(
             onPostClick = {
                 viewModel.postReview(reviewText)
             },
-            isPostEnabled = reviewText.isNotBlank() && uiState.postState !is ReviewWritePostState.Loading
+            isPostEnabled = reviewText.isNotBlank() && uiState.postState !is ReviewWritePostState.Loading,
         )
         Spacer(modifier = Modifier.height(21.dp))
         // TODO: 서버에 책 정보 받아오기 구현
@@ -148,7 +147,7 @@ fun ReviewWriteTopBarPreview() {
     ReviewWriteTopBar(
         onCloseClick = {},
         onPostClick = {},
-        isPostEnabled = true
+        isPostEnabled = true,
     )
 }
 
