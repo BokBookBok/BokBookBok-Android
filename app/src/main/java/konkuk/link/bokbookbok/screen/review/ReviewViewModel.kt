@@ -7,21 +7,38 @@ import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import konkuk.link.bokbookbok.data.model.request.review.VoteRequest
+import konkuk.link.bokbookbok.data.model.response.reading.ReadingApiStatus
 import konkuk.link.bokbookbok.data.model.response.review.BookReviewResponse
 import konkuk.link.bokbookbok.data.model.response.review.CurrentBook
 import konkuk.link.bokbookbok.data.model.response.review.VoteResponse
 import konkuk.link.bokbookbok.data.repository.ReviewRepository
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.jvm.java
 
+sealed interface ReviewHomeEvent {
+    data class ShowToast(
+        val message: String,
+    ) : ReviewHomeEvent
+}
+
 sealed interface VoteState {
     object Loading : VoteState
 
-    data class Success(
+    data class NotCreated(
+        val reason: String,
+    ) : VoteState
+
+    data class CanVote(
+        val voteData: VoteResponse,
+    ) : VoteState
+
+    data class Voted(
         val voteData: VoteResponse,
     ) : VoteState
 
@@ -35,7 +52,8 @@ data class ReviewHomeUiState(
     val currentBook: CurrentBook? = null,
     val bookReview: BookReviewResponse? = null,
     val voteState: VoteState = VoteState.Loading,
-    val errorMessage: String? = null,
+    val loadErrorMessage: String? = null,
+    val canVote: Boolean = false,
 )
 
 class ReviewHomeViewModel(
@@ -45,8 +63,8 @@ class ReviewHomeViewModel(
     private val _uiState = MutableStateFlow(ReviewHomeUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _currentBookId = MutableStateFlow<Int?>(null)
-    val currentBookId = _currentBookId.value
+    private val _event = MutableSharedFlow<ReviewHomeEvent>()
+    val event = _event.asSharedFlow()
 
     init {
         val bookIdFromNav: Int? = savedStateHandle.get<Int>("bookId")
@@ -60,37 +78,31 @@ class ReviewHomeViewModel(
 
     fun loadInitialData() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+            _uiState.update { it.copy(isLoading = true, loadErrorMessage = null) }
 
-            val currentBookResult = reviewRepository.getCurrentBook()
-
-            currentBookResult
+            reviewRepository
+                .getCurrentBook()
                 .onSuccess { book ->
-                    _currentBookId.value = book.id
+                    val bookStatusDeferred = async { reviewRepository.getBookStatus(book.id) }
+                    val reviewsDeferred = async { reviewRepository.getBookReviews(book.id) }
+                    val voteDeferred = async { reviewRepository.getVoteResult(book.id) }
+                    val bookStatusResult = bookStatusDeferred.await()
+                    val reviewsResult = reviewsDeferred.await()
+                    val voteResult = voteDeferred.await()
 
-                    val reviewsResultDeferred = async { reviewRepository.getBookReviews(book.id) }
-                    val voteResultDeferred = async { reviewRepository.getVoteResult(book.id) }
-
-                    val reviewsResult = reviewsResultDeferred.await()
-                    val voteResult = voteResultDeferred.await()
-
-                    _uiState.update { currentState ->
-                        currentState.copy(
+                    _uiState.update {
+                        val status = bookStatusResult.getOrNull()?.status
+                        it.copy(
                             isLoading = false,
                             currentBook = book,
                             bookReview = reviewsResult.getOrNull(),
-                            voteState =
-                                voteResult.fold(
-                                    onSuccess = { VoteState.Success(it) },
-                                    onFailure = { VoteState.Error(it.message ?: "투표 정보 로딩 실패") },
-                                ),
-                            errorMessage = if (reviewsResult.isFailure) reviewsResult.exceptionOrNull()?.message else null,
+                            voteState = voteResult.getOrElse { e -> VoteState.Error(e.message ?: "투표 정보 로딩 실패") },
+                            loadErrorMessage = if (reviewsResult.isFailure) reviewsResult.exceptionOrNull()?.message else null,
+                            canVote = (status == ReadingApiStatus.READ_COMPLETED || status == ReadingApiStatus.REVIEWED),
                         )
                     }
                 }.onFailure { error ->
-                    _uiState.update {
-                        it.copy(isLoading = false, errorMessage = error.message)
-                    }
+                    _uiState.update { it.copy(isLoading = false, loadErrorMessage = error.message) }
                 }
         }
     }
@@ -108,7 +120,7 @@ class ReviewHomeViewModel(
                     fetchVoteResult(book.id)
                 }.onFailure { error ->
                     _uiState.update {
-                        it.copy(isLoading = false, errorMessage = error.message)
+                        it.copy(isLoading = false, loadErrorMessage = error.message)
                     }
                 }
         }
@@ -125,7 +137,10 @@ class ReviewHomeViewModel(
                     }
                 }.onFailure { error ->
                     _uiState.update {
-                        it.copy(isLoading = false, errorMessage = error.message)
+                        it.copy(
+                            isLoading = false,
+                            loadErrorMessage = error.message ?: "감상평 목록을 불러오지 못했습니다.",
+                        )
                     }
                 }
         }
@@ -136,8 +151,8 @@ class ReviewHomeViewModel(
             _uiState.update { it.copy(voteState = VoteState.Loading) }
             reviewRepository
                 .getVoteResult(bookId)
-                .onSuccess { voteData ->
-                    _uiState.update { it.copy(voteState = VoteState.Success(voteData)) }
+                .onSuccess { voteResultState ->
+                    _uiState.update { it.copy(voteState = voteResultState) }
                 }.onFailure { error ->
                     _uiState.update { it.copy(voteState = VoteState.Error(error.message ?: "투표 정보 로딩 실패")) }
                 }
@@ -180,27 +195,33 @@ class ReviewHomeViewModel(
                         )
                     }
                 }.onFailure { error ->
-                    _uiState.update { it.copy(errorMessage = error.message) }
+                    _event.emit(ReviewHomeEvent.ShowToast(error.message ?: "공감에 실패했습니다."))
                 }
         }
     }
 
     fun postVote(option: String) {
-        val bookId = _currentBookId.value ?: return
-        val currentVoteState = _uiState.value.voteState
-        if (currentVoteState is VoteState.Loading ||
-            (currentVoteState is VoteState.Success && currentVoteState.voteData.myVote != null)
-        ) {
+        val bookId = uiState.value.currentBook?.id ?: return
+
+        if (!uiState.value.canVote) {
+            viewModelScope.launch {
+                _event.emit(ReviewHomeEvent.ShowToast("책을 다 읽은 후에만 투표할 수 있습니다."))
+            }
             return
         }
+
+        if (_uiState.value.voteState !is VoteState.CanVote) {
+            return
+        }
+
         viewModelScope.launch {
             val request = VoteRequest(option = option)
             reviewRepository
                 .postVote(bookId, request)
                 .onSuccess { updatedVoteData ->
-                    _uiState.update { it.copy(voteState = VoteState.Success(updatedVoteData)) }
+                    _uiState.update { it.copy(voteState = VoteState.Voted(updatedVoteData)) }
                 }.onFailure { error ->
-                    _uiState.update { it.copy(voteState = VoteState.Error(error.message ?: "투표 실패")) }
+                    _event.emit(ReviewHomeEvent.ShowToast(error.message ?: "투표에 실패했습니다."))
                 }
         }
     }

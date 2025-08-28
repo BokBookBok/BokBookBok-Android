@@ -24,12 +24,9 @@ import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
 @Composable
 private fun WonGoJiCell(
     char: Char?,
-    modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier =
-            modifier
-                .size(34.dp),
+        modifier = Modifier.size(34.dp),
         contentAlignment = Alignment.Center,
     ) {
         Text(
@@ -45,15 +42,25 @@ private fun WonGoJiCell(
 fun WonGoJiRow(
     text: String,
     modifier: Modifier = Modifier,
+    forceEightCells: Boolean = false,
 ) {
+    val cellCount = if (forceEightCells) 8 else text.length.coerceAtMost(8)
+
+    if (cellCount == 0) {
+        Spacer(modifier = Modifier.height(34.dp + 12.dp))
+        return
+    }
+
     val borderColor = bokBookBokColors.second
     Column(modifier = modifier) {
         Row(
             modifier =
                 Modifier.drawBehind {
-                    val cellWidth = size.width / 8
+                    val cellWidth = 34.dp.toPx()
+                    val rowWidth = cellWidth * cellCount
                     val strokeWidth = 1.dp.toPx()
-                    for (i in 1 until 8) {
+
+                    for (i in 1 until cellCount) {
                         val x = cellWidth * i
                         drawLine(
                             color = borderColor,
@@ -61,18 +68,19 @@ fun WonGoJiRow(
                             end = Offset(x, size.height),
                             strokeWidth = strokeWidth,
                         )
-                        drawLine(
-                            color = borderColor,
-                            start = Offset(0f, size.height),
-                            end = Offset(size.width, size.height),
-                            strokeWidth = strokeWidth,
-                        )
                     }
+
+                    drawLine(
+                        color = borderColor,
+                        start = Offset(0f, size.height),
+                        end = Offset(rowWidth, size.height),
+                        strokeWidth = strokeWidth,
+                    )
                 },
         ) {
-            for (i in 0 until 8) {
+            for (i in 0 until cellCount) {
                 val char = text.getOrNull(i)
-                WonGoJiCell(char = char, modifier = Modifier.weight(1f))
+                WonGoJiCell(char = char)
             }
         }
         Spacer(modifier = Modifier.height(12.dp))
@@ -89,16 +97,20 @@ fun WonGoJiBoard(
             processTextForWonGoJi(text)
         }
 
+    val isMultiLine = processedLines.size > 1
+
     Column(
         modifier =
             modifier
                 .background(bokBookBokColors.white)
                 .border(width = 2.dp, color = bokBookBokColors.second),
     ) {
-        processedLines.forEachIndexed { index, line ->
-            WonGoJiRow(text = line)
+        val linesToShow = processedLines.take(8)
 
-            if (index < processedLines.size - 1) {
+        linesToShow.forEachIndexed { index, line ->
+            WonGoJiRow(text = line, forceEightCells = isMultiLine)
+
+            if (index < linesToShow.size - 1) {
                 HorizontalDivider(
                     thickness = 1.dp,
                     color = bokBookBokColors.second,

@@ -78,7 +78,7 @@ fun AppNavHost(
             val factory = remember { ReadingViewModelFactory(readingRepository) }
             ReadingScreen(
                 navController = navController,
-                viewModel = viewModel(factory = factory)
+                viewModel = viewModel(factory = factory),
             )
         }
 
@@ -117,7 +117,7 @@ fun AppNavHost(
             route = Screen.WriteReview.route,
             arguments = listOf(navArgument("bookId") { type = NavType.IntType }),
         ) {
-            val factory = remember { ReviewWriteViewModelFactory(reviewRepository) }
+            val factory = remember { ReviewWriteViewModelFactory(reviewRepository, readingRepository) }
             ReviewWriteScreen(
                 navController = navController,
                 factory = factory,

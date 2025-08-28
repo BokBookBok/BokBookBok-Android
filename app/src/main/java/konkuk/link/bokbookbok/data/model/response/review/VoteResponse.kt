@@ -7,7 +7,7 @@ data class VoteResult(
     val option: String,
     val text: String,
     val count: Int,
-    val percentage: Int,
+    val percentage: Double,
 )
 
 @Serializable

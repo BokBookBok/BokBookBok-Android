@@ -20,6 +20,7 @@ import konkuk.link.bokbookbok.data.model.response.review.CurrentBook
 import konkuk.link.bokbookbok.data.model.response.review.LikeResponse
 import konkuk.link.bokbookbok.data.model.response.review.ReviewWriteResponse
 import konkuk.link.bokbookbok.data.model.response.review.VoteResponse
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
@@ -27,7 +28,6 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface ApiService {
-
     // Auth
     @POST("/api/auth/register/email")
     suspend fun registerEmailDuplicate(
@@ -58,25 +58,14 @@ interface ApiService {
     @GET("/api/books/{bookId}/vote/result")
     suspend fun getVoteResult(
         @Path("bookId") bookId: Int,
-    ): BaseResponse<VoteResponse>
+    ): Response<BaseResponse<VoteResponse>>
 
     @POST("/api/books/{bookId}/vote")
     suspend fun postVote(
         @Path("bookId") bookId: Int,
         @Body request: VoteRequest,
     ): BaseResponse<VoteResponse>
-
-    // Reading
-    @GET("/api/home")
-    suspend fun getReadingHome(): BaseResponse<ReadingHomeResponse>
-
-    @PATCH("/api/books/{bookId}/status")
-    suspend fun patchReadingStatus(
-        @Path("bookId") bookId: Int,
-        @Body request: ChangeReadingStatusRequest,
-    ): BaseResponse<ChangeReadingStatusResponse>
   
-    // Review
     @GET("/api/books/{bookId}")
     suspend fun getBookReviews(
         @Path("bookId") bookId: Int,
@@ -89,6 +78,21 @@ interface ApiService {
 
     @GET("/api/books/current")
     suspend fun getCurrentBook(): BaseResponse<CurrentBook>
+  
+    @GET("/api/books/{bookId}/status")
+    suspend fun getBookStatus(
+        @Path("bookId") bookId: Int,
+    ): BaseResponse<ChangeReadingStatusResponse>
+
+    // Reading
+    @GET("/api/home")
+    suspend fun getReadingHome(): BaseResponse<ReadingHomeResponse>
+
+    @PATCH("/api/books/{bookId}/status")
+    suspend fun patchReadingStatus(
+        @Path("bookId") bookId: Int,
+        @Body request: ChangeReadingStatusRequest,
+    ): BaseResponse<ChangeReadingStatusResponse>
 
     // Record
     @GET("/api/records")

@@ -51,22 +51,22 @@ class ReadingViewModel(
 
             val nickname = UserManager.getNickname()
 
-            readingRepository.getReading()
+            readingRepository
+                .getReading()
                 .onSuccess { homeResponse ->
                     _uiState.update {
                         it.copy(
                             isLoading = false,
                             homeData = homeResponse,
                             userNickname = nickname,
-                            errorMessage = null
+                            errorMessage = null,
                         )
                     }
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            errorMessage = error.message ?: "알 수 없는 오류가 발생했습니다."
+                            errorMessage = error.message ?: "알 수 없는 오류가 발생했습니다.",
                         )
                     }
                 }
@@ -74,36 +74,44 @@ class ReadingViewModel(
     }
 
     fun startReading() {
-        val currentBookId = _uiState.value.homeData?.book?.id ?: return
+        val currentBookId =
+            _uiState.value.homeData
+                ?.book
+                ?.id ?: return
 
         viewModelScope.launch {
-            readingRepository.patchStatus(
-                bookId = currentBookId,
-                status = ReadingApiStatus.READING
-            ).onSuccess {
-                fetchReadingHome()
-            }.onFailure { error ->
-                _uiState.update {
-                    it.copy(errorMessage = error.message ?: "상태 변경에 실패했습니다.")
+            readingRepository
+                .patchStatus(
+                    bookId = currentBookId,
+                    status = ReadingApiStatus.READING,
+                ).onSuccess {
+                    fetchReadingHome()
+                }.onFailure { error ->
+                    _uiState.update {
+                        it.copy(errorMessage = error.message ?: "상태 변경에 실패했습니다.")
+                    }
                 }
-            }
         }
     }
 
     fun completeReading() {
-        val currentBookId = _uiState.value.homeData?.book?.id ?: return
+        val currentBookId =
+            _uiState.value.homeData
+                ?.book
+                ?.id ?: return
 
         viewModelScope.launch {
-            readingRepository.patchStatus(
-                bookId = currentBookId,
-                status = ReadingApiStatus.READ_COMPLETED
-            ).onSuccess {
-                fetchReadingHome()
-            }.onFailure { error ->
-                _uiState.update {
-                    it.copy(errorMessage = error.message ?: "상태 변경에 실패했습니다.")
+            readingRepository
+                .patchStatus(
+                    bookId = currentBookId,
+                    status = ReadingApiStatus.READ_COMPLETED,
+                ).onSuccess {
+                    fetchReadingHome()
+                }.onFailure { error ->
+                    _uiState.update {
+                        it.copy(errorMessage = error.message ?: "상태 변경에 실패했습니다.")
+                    }
                 }
-            }
         }
     }
 }

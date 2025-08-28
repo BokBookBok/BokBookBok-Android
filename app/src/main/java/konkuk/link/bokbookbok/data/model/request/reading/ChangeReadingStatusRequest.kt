@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ChangeReadingStatusRequest(
-    val status: ReadingApiStatus
+    val status: ReadingApiStatus,
 )
