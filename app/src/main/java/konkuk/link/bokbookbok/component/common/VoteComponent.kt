@@ -32,14 +32,6 @@ import konkuk.link.bokbookbok.data.model.response.review.VoteResult
 import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
 
-/**
- * 투표 전체를 감싸는 컴포넌트
- * @param question 질문 텍스트
- * @param option1Text 첫 번째 선택지 텍스트
- * @param option2Text 두 번째 선택지 텍스트
- * @param pollResultData 투표 결과 데이터. null일 경우 투표 전 상태로 표시됩니다.
- * @param onVote 투표 시 호출될 콜백 함수. 선택한 옵션(e.g., "A")을 인자로 받습니다.
- */
 @Composable
 fun PollComponent(
     question: String,
@@ -50,7 +42,6 @@ fun PollComponent(
 ) {
     val isVoted = pollResultData?.myVote != null
     val myVoteOption = pollResultData?.myVote
-
     val optionA = pollResultData?.voteResult?.find { it.option == "A" }
     val optionB = pollResultData?.voteResult?.find { it.option == "B" }
 
@@ -69,51 +60,60 @@ fun PollComponent(
             color = bokBookBokColors.fontDarkBrown,
         )
 
-        PollOptionItem(
-            text = option1Text,
-            percentage = optionA?.percentage ?: 0.0,
-            isVoted = isVoted,
-            isSelectedOption = myVoteOption == "A",
-            onClick = {
-                if (!isVoted) {
-                    onVote("A")
-                }
-            },
-        )
+        Column {
+            Text(
+                text = option1Text,
+                style = defaultBokBookBokTypography.subBody,
+                color = if (isVoted) bokBookBokColors.fontDarkGray else Color.Transparent,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            PollOptionItem(
+                optionText = option1Text,
+                percentage = optionA?.percentage ?: 0.0,
+                isVoted = isVoted,
+                isSelectedOption = myVoteOption == "A",
+                onClick = {
+                    if (!isVoted) {
+                        onVote("A")
+                    }
+                },
+            )
+        }
 
-        PollOptionItem(
-            text = option2Text,
-            percentage = optionB?.percentage ?: 0.0,
-            isVoted = isVoted,
-            isSelectedOption = myVoteOption == "B",
-            onClick = {
-                if (!isVoted) {
-                    onVote("B")
-                }
-            },
-        )
+        Column() {
+            Text(
+                text = option2Text,
+                style = defaultBokBookBokTypography.subBody,
+                color = if (isVoted) bokBookBokColors.fontDarkGray else Color.Transparent,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            PollOptionItem(
+                optionText = option2Text,
+                percentage = optionB?.percentage ?: 0.0,
+                isVoted = isVoted,
+                isSelectedOption = myVoteOption == "B",
+                onClick = {
+                    if (!isVoted) {
+                        onVote("B")
+                    }
+                },
+            )
+        }
     }
 }
 
-/**
- * 각 투표 항목을 나타내는 컴포넌트
- * @param text 선택지 텍스트
- * @param percentage 투표율 (0-100)
- * @param isVoted 투표가 진행되었는지 여부
- * @param isSelectedOption 첫 번째 옵션인지 여부 (색상 구분을 위함)
- * @param onClick 클릭 이벤트 콜백
- */
 @Composable
 private fun PollOptionItem(
-    text: String,
+    optionText: String,
     percentage: Double,
     isVoted: Boolean,
     isSelectedOption: Boolean,
     onClick: () -> Unit,
 ) {
     val animatedPercentage by animateFloatAsState(
-        targetValue = if (isVoted) (percentage / 100f).toFloat() else 0f,
+        targetValue = if (isVoted) (percentage / 100.0).toFloat() else 0f,
         animationSpec = tween(durationMillis = 1000),
+        label = "percentageAnimation"
     )
 
     val backgroundColor =
@@ -121,13 +121,6 @@ private fun PollOptionItem(
             !isVoted -> bokBookBokColors.beige
             isSelectedOption -> bokBookBokColors.second
             else -> bokBookBokColors.main
-        }
-
-    val textColor =
-        when {
-            !isVoted -> bokBookBokColors.fontDarkBrown
-            isSelectedOption -> bokBookBokColors.white
-            else -> bokBookBokColors.fontDarkBrown
         }
 
     Box(
@@ -153,17 +146,16 @@ private fun PollOptionItem(
                     .fillMaxSize()
                     .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text(
-                text = text,
-                color = textColor,
-                style = defaultBokBookBokTypography.subBody,
-            )
-
             if (isVoted) {
                 Text(
-                    text = "$percentage%",
+                    text = "${String.format("%.1f", percentage)}%",
+                    color = bokBookBokColors.fontDarkBrown,
+                    style = defaultBokBookBokTypography.subBody,
+                )
+            } else {
+                Text(
+                    text = optionText,
                     color = bokBookBokColors.fontDarkBrown,
                     style = defaultBokBookBokTypography.subBody,
                 )
@@ -243,7 +235,7 @@ fun PollComponentVotedPreview() {
             option1Text = option1Text,
             option2Text = option2Text,
             pollResultData = initialPollData,
-            onVote = {}, // 이미 투표가 끝난 상태이므로 클릭 이벤트는 비워둠
+            onVote = {},
         )
     }
 }
