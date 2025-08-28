@@ -18,11 +18,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import kotlinx.coroutines.launch
 import konkuk.link.bokbookbok.R
 import konkuk.link.bokbookbok.navigation.Screen
 import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun SplashScreen(navController: NavController) {
@@ -42,13 +42,13 @@ fun SplashScreen(navController: NavController) {
         launch {
             alpha.animateTo(
                 targetValue = 1f,
-                animationSpec = tween(durationMillis = 2000)
+                animationSpec = tween(durationMillis = 2000),
             )
         }
         launch {
             offsetY.animateTo(
                 targetValue = 0f,
-                animationSpec = tween(durationMillis = 2000)
+                animationSpec = tween(durationMillis = 2000),
             )
         }
 
@@ -75,9 +75,10 @@ fun SplashScreen(navController: NavController) {
         Image(
             painter = painterResource(id = R.drawable.ic_bok_logo),
             contentDescription = "ic_bok_logo",
-            modifier = Modifier
-                .offset(y = offsetY.value.dp)
-                .alpha(alpha.value)
+            modifier =
+                Modifier
+                    .offset(y = offsetY.value.dp)
+                    .alpha(alpha.value),
         )
     }
 }

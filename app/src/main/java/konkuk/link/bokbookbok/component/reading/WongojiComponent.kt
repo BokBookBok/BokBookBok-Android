@@ -54,28 +54,29 @@ fun WonGoJiRow(
     val borderColor = bokBookBokColors.second
     Column(modifier = modifier) {
         Row(
-            modifier = Modifier.drawBehind {
-                val cellWidth = 34.dp.toPx()
-                val rowWidth = cellWidth * cellCount
-                val strokeWidth = 1.dp.toPx()
+            modifier =
+                Modifier.drawBehind {
+                    val cellWidth = 34.dp.toPx()
+                    val rowWidth = cellWidth * cellCount
+                    val strokeWidth = 1.dp.toPx()
 
-                for (i in 1 until cellCount) {
-                    val x = cellWidth * i
+                    for (i in 1 until cellCount) {
+                        val x = cellWidth * i
+                        drawLine(
+                            color = borderColor,
+                            start = Offset(x, 0f),
+                            end = Offset(x, size.height),
+                            strokeWidth = strokeWidth,
+                        )
+                    }
+
                     drawLine(
                         color = borderColor,
-                        start = Offset(x, 0f),
-                        end = Offset(x, size.height),
+                        start = Offset(0f, size.height),
+                        end = Offset(rowWidth, size.height),
                         strokeWidth = strokeWidth,
                     )
-                }
-
-                drawLine(
-                    color = borderColor,
-                    start = Offset(0f, size.height),
-                    end = Offset(rowWidth, size.height),
-                    strokeWidth = strokeWidth,
-                )
-            },
+                },
         ) {
             for (i in 0 until cellCount) {
                 val char = text.getOrNull(i)

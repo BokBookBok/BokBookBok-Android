@@ -109,14 +109,14 @@ class ReviewWriteViewModel(
         }
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            readingRepository.patchStatus(
-                bookId = bookId,
-                status = ReadingApiStatus.REVIEWED
-            ).onSuccess {
-
-            }.onFailure { error ->
-                _uiState.update { it.copy(isLoading = false) }
-            }
+            readingRepository
+                .patchStatus(
+                    bookId = bookId,
+                    status = ReadingApiStatus.REVIEWED,
+                ).onSuccess {
+                }.onFailure { error ->
+                    _uiState.update { it.copy(isLoading = false) }
+                }
         }
     }
 
@@ -151,7 +151,7 @@ class ReviewWriteViewModel(
 
 class ReviewWriteViewModelFactory(
     private val reviewRepository: ReviewRepository,
-    private val readingRepository: ReadingRepository
+    private val readingRepository: ReadingRepository,
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(
         modelClass: Class<T>,
