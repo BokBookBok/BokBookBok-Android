@@ -18,25 +18,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import coil3.request.ImageRequest
-import coil3.request.crossfade
 import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
 import konkuk.link.bokbookbok.util.AppGradientBrush
 
 @Composable
 fun BookInfoCard(
+    modifier: Modifier = Modifier,
     imageUrl: String,
     title: String,
     author: String,
 ) {
     Row(
         modifier =
-            Modifier
+            modifier
                 .fillMaxWidth()
                 .border(
                     width = 1.dp,
@@ -49,12 +47,7 @@ fun BookInfoCard(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         AsyncImage(
-            model =
-                ImageRequest
-                    .Builder(LocalContext.current)
-                    .data(imageUrl)
-                    .crossfade(true)
-                    .build(),
+            model = imageUrl,
             contentDescription = "책 표지",
             modifier =
                 Modifier
@@ -63,23 +56,12 @@ fun BookInfoCard(
             contentScale = ContentScale.Crop,
         )
 
-        /*
-        Image(
-            painter = painterResource(id = R.drawable.dummy_bookcover),
-            contentDescription = "책 표지",
-            modifier = Modifier
-                .size(width = 70.dp, height = 103.dp)
-                .clip(RoundedCornerShape(3.dp)),
-            contentScale = ContentScale.Crop
-        )
-         */
-
         Spacer(modifier = Modifier.width(10.dp))
         Column(
             modifier = Modifier.padding(start = 10.dp),
             verticalArrangement = Arrangement.Center,
         ) {
-            Text(text = title, color = bokBookBokColors.fontDarkBrown, style = defaultBokBookBokTypography.body)
+            Text(text = title, color = bokBookBokColors.fontDarkBrown, style = defaultBokBookBokTypography.subHeader)
             Spacer(modifier = Modifier.height(10.dp))
             Text(text = author, color = bokBookBokColors.fontLightGray, style = defaultBokBookBokTypography.body)
         }

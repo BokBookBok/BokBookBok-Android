@@ -6,7 +6,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import konkuk.link.bokbookbok.data.model.request.ReviewWriteRequest
+import konkuk.link.bokbookbok.data.model.request.review.ReviewWriteRequest
+import konkuk.link.bokbookbok.data.model.response.review.CurrentBook
 import konkuk.link.bokbookbok.data.repository.ReviewRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,10 +27,12 @@ sealed interface ReviewWritePostState {
 }
 
 data class ReviewWriteUiState(
+    val isLoading: Boolean = true,
+    val currentBook: CurrentBook? = null,
     val postState: ReviewWritePostState = ReviewWritePostState.Idle,
 )
 
-class ReviewWriteViewModel( // 이름 변경
+class ReviewWriteViewModel(
     private val reviewRepository: ReviewRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
@@ -38,12 +41,35 @@ class ReviewWriteViewModel( // 이름 변경
     private val _uiState = MutableStateFlow(ReviewWriteUiState())
     val uiState = _uiState.asStateFlow()
 
-    fun postReview(content: String) {
+    init {
+        fetchCurrentBook()
+    }
+
+    private fun fetchCurrentBook() {
         if (bookId == -1) {
+            _uiState.update { it.copy(isLoading = false, postState = ReviewWritePostState.Error("책 정보가 올바르지 않습니다.")) }
+            return
+        }
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            reviewRepository
+                .getCurrentBook()
+                .onSuccess { book ->
+                    _uiState.update {
+                        it.copy(isLoading = false, currentBook = book)
+                    }
+                }.onFailure {
+                    _uiState.update { it.copy(isLoading = false) }
+                }
+        }
+    }
+
+    fun postReview(content: String) {
+        val bookId = _uiState.value.currentBook?.id
+        if (bookId == null) {
             _uiState.update { it.copy(postState = ReviewWritePostState.Error("책 정보가 올바르지 않습니다.")) }
             return
         }
-
         viewModelScope.launch {
             _uiState.update { it.copy(postState = ReviewWritePostState.Loading) }
             val request = ReviewWriteRequest(bookId = bookId, content = content)

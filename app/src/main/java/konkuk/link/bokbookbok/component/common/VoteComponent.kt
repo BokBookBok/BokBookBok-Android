@@ -27,8 +27,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import konkuk.link.bokbookbok.data.model.response.VoteResponse
-import konkuk.link.bokbookbok.data.model.response.VoteResult
+import konkuk.link.bokbookbok.data.model.response.review.VoteResponse
+import konkuk.link.bokbookbok.data.model.response.review.VoteResult
 import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
 
