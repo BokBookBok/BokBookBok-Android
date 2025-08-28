@@ -14,6 +14,7 @@ import androidx.navigation.navArgument
 import konkuk.link.bokbookbok.data.remote.RetrofitClient
 import konkuk.link.bokbookbok.data.repository.AuthRepository
 import konkuk.link.bokbookbok.data.repository.ReadingRepository
+import konkuk.link.bokbookbok.data.repository.RecordRepository
 import konkuk.link.bokbookbok.data.repository.ReviewRepository
 import konkuk.link.bokbookbok.screen.auth.LoginScreen
 import konkuk.link.bokbookbok.screen.auth.LoginViewModelFactory
@@ -22,6 +23,7 @@ import konkuk.link.bokbookbok.screen.auth.RegisterViewModelFactory
 import konkuk.link.bokbookbok.screen.reading.ReadingScreen
 import konkuk.link.bokbookbok.screen.reading.ReadingViewModelFactory
 import konkuk.link.bokbookbok.screen.record.RecordScreen
+import konkuk.link.bokbookbok.screen.record.RecordViewModelFactory
 import konkuk.link.bokbookbok.screen.review.ReviewHomeViewModelFactory
 import konkuk.link.bokbookbok.screen.review.ReviewScreen
 import konkuk.link.bokbookbok.screen.review.ReviewWriteScreen
@@ -37,6 +39,7 @@ fun AppNavHost(
     val authRepository = remember { AuthRepository(RetrofitClient.publicApiService) }
     val reviewRepository = remember { ReviewRepository(RetrofitClient.authApiService) }
     val readingRepository = remember { ReadingRepository(RetrofitClient.authApiService) }
+    val recordRepository = remember { RecordRepository(RetrofitClient.authApiService) }
 
     NavHost(
         navController = navController,
@@ -73,7 +76,11 @@ fun AppNavHost(
             )
         }
         composable(route = Screen.RecordHome.route) {
-            RecordScreen()
+            val factory = remember { RecordViewModelFactory(recordRepository) }
+            RecordScreen(
+                navController = navController,
+                viewModel = viewModel(factory = factory)
+            )
         }
 
         composable(
