@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -12,9 +13,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import konkuk.link.bokbookbok.data.remote.RetrofitClient
+import konkuk.link.bokbookbok.data.repository.AdminRepository
 import konkuk.link.bokbookbok.data.repository.AuthRepository
 import konkuk.link.bokbookbok.data.repository.ReadingRepository
 import konkuk.link.bokbookbok.data.repository.ReviewRepository
+import konkuk.link.bokbookbok.screen.admin.AdminScreen
+import konkuk.link.bokbookbok.screen.admin.AdminViewModelFactory
 import konkuk.link.bokbookbok.screen.auth.LoginScreen
 import konkuk.link.bokbookbok.screen.auth.LoginViewModelFactory
 import konkuk.link.bokbookbok.screen.auth.RegisterScreen
@@ -33,10 +37,12 @@ fun AppNavHost(
     navController: NavHostController,
     innerPadding: PaddingValues,
 ) {
+    val context = LocalContext.current
     // repository
-    val authRepository = remember { AuthRepository(RetrofitClient.publicApiService) }
+    val authRepository = remember { AuthRepository(RetrofitClient.authApiService) }
     val reviewRepository = remember { ReviewRepository(RetrofitClient.authApiService) }
     val readingRepository = remember { ReadingRepository(RetrofitClient.authApiService) }
+    val adminRepository = remember { AdminRepository(RetrofitClient.authApiService, context = context) }
 
     NavHost(
         navController = navController,
@@ -53,6 +59,13 @@ fun AppNavHost(
         composable(route = Screen.Register.route) {
             val factory = remember { RegisterViewModelFactory(authRepository) }
             RegisterScreen(
+                navController = navController,
+                factory = factory,
+            )
+        }
+        composable(route = Screen.Admin.route) {
+            val factory = remember { AdminViewModelFactory(adminRepository) }
+            AdminScreen(
                 navController = navController,
                 factory = factory,
             )
