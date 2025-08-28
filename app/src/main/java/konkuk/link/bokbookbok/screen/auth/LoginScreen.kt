@@ -47,10 +47,18 @@ fun LoginScreen(
     var passwordValue by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
-        viewModel.loginSuccessEvent.collect {
-            navController.navigate(Screen.ReadingHome.route) {
-                popUpTo(Screen.Splash.route) {
-                    inclusive = true
+        viewModel.loginEvent.collect { event ->
+            // ✅ 2. 이벤트 종류에 따라 분기 처리합니다.
+            when (event) {
+                is LoginEvent.NavigateToMain -> {
+                    navController.navigate(Screen.ReadingHome.route) {
+                        popUpTo(Screen.Splash.route) { inclusive = true }
+                    }
+                }
+                is LoginEvent.NavigateToAdmin -> {
+                    navController.navigate(Screen.Admin.route) {
+                        popUpTo(Screen.Splash.route) { inclusive = true }
+                    }
                 }
             }
         }
