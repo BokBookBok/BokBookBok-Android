@@ -13,8 +13,8 @@ data class RecordHomeResponse(
 data class Record(
     val bookInfoResponse: BookInfoResponse,
     val readDays: Int,
-    val startedAt: String,
-    val endedAt: String,
+    val startDate: String,
+    val endDate: String,
     val weekLabel: String
 )
 
