@@ -12,3 +12,9 @@ data class BaseResponse<T>(
     @SerialName("data")
     val data: T?,
 )
+
+@Serializable
+data class ErrorResponse(
+    val code: Int,
+    val msg: String,
+)

@@ -5,10 +5,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ReadingHomeResponse(
     val book: Book,
-    val record: Record? = null,       // NOT_STARTED 상태일 때 null
-    val myReview: Review? = null,     // REVIEWED 상태가 아닐 때 null
-    val bestReview: Review?,          // 베스트 리뷰가 없을 경우를 대비해 nullable로 선언
-    val status: ReadingApiStatus,        // Enum으로 상태를 관리하여 타입 안정성 확보
+    val record: Record? = null, // NOT_STARTED 상태일 때 null
+    val myReview: Review? = null, // REVIEWED 상태가 아닐 때 null
+    val bestReview: Review?, // 베스트 리뷰가 없을 경우를 대비해 nullable로 선언
+    val status: ReadingApiStatus, // Enum으로 상태를 관리하여 타입 안정성 확보
 )
 
 @Serializable
@@ -17,7 +17,7 @@ data class Book(
     val title: String,
     val author: String,
     val imageUrl: String,
-    val description: String?
+    val description: String?,
 )
 
 @Serializable

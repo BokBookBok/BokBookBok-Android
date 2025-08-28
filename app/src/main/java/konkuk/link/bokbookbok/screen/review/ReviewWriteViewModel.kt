@@ -11,7 +11,10 @@ import konkuk.link.bokbookbok.data.model.response.reading.ReadingApiStatus
 import konkuk.link.bokbookbok.data.model.response.review.CurrentBook
 import konkuk.link.bokbookbok.data.repository.ReadingRepository
 import konkuk.link.bokbookbok.data.repository.ReviewRepository
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -32,6 +35,7 @@ data class ReviewWriteUiState(
     val isLoading: Boolean = true,
     val currentBook: CurrentBook? = null,
     val postState: ReviewWritePostState = ReviewWritePostState.Idle,
+    val canWriteReview: Boolean = false,
 )
 
 class ReviewWriteViewModel(
@@ -44,8 +48,38 @@ class ReviewWriteViewModel(
     private val _uiState = MutableStateFlow(ReviewWriteUiState())
     val uiState = _uiState.asStateFlow()
 
+    private val _event = MutableSharedFlow<ReviewHomeEvent>()
+    val event = _event.asSharedFlow()
+
     init {
-        fetchCurrentBook()
+        loadInitialData()
+    }
+
+    private fun loadInitialData() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
+            val bookDetailsDeferred = async { reviewRepository.getCurrentBook() }
+            val bookStatusDeferred = async { reviewRepository.getBookStatus(bookId) }
+
+            val bookDetailsResult = bookDetailsDeferred.await()
+            val bookStatusResult = bookStatusDeferred.await()
+
+            if (bookDetailsResult.isSuccess && bookStatusResult.isSuccess) {
+                val book = bookDetailsResult.getOrThrow()
+                val status = bookStatusResult.getOrThrow().status
+
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        currentBook = book,
+                        canWriteReview = (status == ReadingApiStatus.READ_COMPLETED),
+                    )
+                }
+            } else {
+                // 에러 처리
+            }
+        }
     }
 
     private fun fetchCurrentBook() {
@@ -75,19 +109,25 @@ class ReviewWriteViewModel(
         }
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            readingRepository.patchStatus(
-                bookId = bookId,
-                status = ReadingApiStatus.REVIEWED
-            ).onSuccess {
-
-            }.onFailure { error ->
-                _uiState.update { it.copy(isLoading = false) }
-            }
+            readingRepository
+                .patchStatus(
+                    bookId = bookId,
+                    status = ReadingApiStatus.REVIEWED,
+                ).onSuccess {
+                }.onFailure { error ->
+                    _uiState.update { it.copy(isLoading = false) }
+                }
         }
     }
 
     fun postReview(content: String) {
         val bookId = _uiState.value.currentBook?.id
+        if (!uiState.value.canWriteReview) {
+            viewModelScope.launch {
+                _event.emit(ReviewHomeEvent.ShowToast("책을 다 읽은 후에만 작성할 수 있습니다."))
+            }
+            return
+        }
         if (bookId == null) {
             _uiState.update { it.copy(postState = ReviewWritePostState.Error("책 정보가 올바르지 않습니다.")) }
             return
@@ -111,7 +151,7 @@ class ReviewWriteViewModel(
 
 class ReviewWriteViewModelFactory(
     private val reviewRepository: ReviewRepository,
-    private val readingRepository: ReadingRepository
+    private val readingRepository: ReadingRepository,
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(
         modelClass: Class<T>,

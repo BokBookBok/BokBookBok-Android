@@ -69,7 +69,7 @@ fun AppNavHost(
             val factory = remember { ReadingViewModelFactory(readingRepository) }
             ReadingScreen(
                 navController = navController,
-                viewModel = viewModel(factory = factory)
+                viewModel = viewModel(factory = factory),
             )
         }
         composable(route = Screen.RecordHome.route) {

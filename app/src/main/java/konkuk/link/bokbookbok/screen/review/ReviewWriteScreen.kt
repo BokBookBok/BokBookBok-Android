@@ -1,6 +1,5 @@
 package konkuk.link.bokbookbok.screen.review
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,11 +30,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import konkuk.link.bokbookbok.component.common.BookInfoCard
 import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
+import konkuk.link.bokbookbok.util.BokToast
 
 @Composable
 fun ReviewWriteScreen(
@@ -45,17 +46,37 @@ fun ReviewWriteScreen(
     val viewModel: ReviewWriteViewModel = viewModel(factory = factory)
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
 
     var reviewText by remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { event ->
+            when (event) {
+                is ReviewHomeEvent.ShowToast -> {
+                    BokToast(context).makeText(
+                        message = event.message,
+                        lifecycleOwner = lifecycleOwner,
+                    )
+                }
+            }
+        }
+    }
 
     LaunchedEffect(uiState.postState) {
         when (val state = uiState.postState) {
             is ReviewWritePostState.Success -> {
-                Toast.makeText(context, "감상평이 등록되었습니다.", Toast.LENGTH_SHORT).show()
+                BokToast(context).makeText(
+                    message = "감상평이 등록되었습니다.",
+                    lifecycleOwner = lifecycleOwner,
+                )
                 navController.popBackStack()
             }
             is ReviewWritePostState.Error -> {
-                Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
+                BokToast(context).makeText(
+                    message = state.message,
+                    lifecycleOwner = lifecycleOwner,
+                )
             }
             else -> {}
         }
