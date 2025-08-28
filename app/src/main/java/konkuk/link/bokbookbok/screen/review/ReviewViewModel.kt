@@ -146,7 +146,7 @@ class ReviewHomeViewModel(
         }
     }
 
-    private fun fetchVoteResult(bookId: Int) {
+    fun fetchVoteResult(bookId: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(voteState = VoteState.Loading) }
             reviewRepository

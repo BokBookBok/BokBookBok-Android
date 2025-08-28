@@ -25,14 +25,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import konkuk.link.bokbookbok.R
+import konkuk.link.bokbookbok.component.common.PollComponent
 import konkuk.link.bokbookbok.component.common.ReviewComponent
 import konkuk.link.bokbookbok.component.common.ReviewType
 import konkuk.link.bokbookbok.data.model.response.review.BookReviewResponse
 import konkuk.link.bokbookbok.screen.review.ReviewHomeViewModel
+import konkuk.link.bokbookbok.screen.review.VoteState
 import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
 import konkuk.link.bokbookbok.util.AppGradientBrush
@@ -50,6 +53,7 @@ fun RecordDetailScreen(
 
     LaunchedEffect (key1 = bookId) {
         viewModel.fetchReviews(bookId)
+        viewModel.fetchVoteResult(bookId)
     }
 
     when {
@@ -73,6 +77,7 @@ fun RecordDetailScreen(
                 reviewData = uiState.bookReview!!,
                 title = title,
                 weekLabel = weekLabel,
+                voteState = uiState.voteState,
                 onLikeClick = { reviewId -> viewModel.toggleLike(reviewId) },
             )
         }
@@ -86,6 +91,7 @@ private fun RecordDetailScreenContent(
     reviewData: BookReviewResponse,
     title: String,
     weekLabel: String,
+    voteState: VoteState,
     onLikeClick: (Int) -> Unit,
 ) {
     Column(
@@ -143,10 +149,62 @@ private fun RecordDetailScreenContent(
                     },
         ) {
             LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(horizontal = 28.dp, vertical = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .drawBehind {
+                        drawRect(color = bokBookBokColors.backGroundBG)
+                        drawRect(brush = AppGradientBrush)
+                    },
+                contentPadding = PaddingValues(start = 28.dp, end = 28.dp, top = 10.dp, bottom = 120.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
+                item {
+                    when (voteState) {
+                        is VoteState.CanVote -> {
+                            PollComponent(
+                                question = voteState.voteData.question,
+                                option1Text = voteState.voteData.voteResult[0].text,
+                                option2Text = voteState.voteData.voteResult[1].text,
+                                pollResultData = voteState.voteData,
+                                onVote = {}
+                            )
+                        }
+
+                        is VoteState.Voted -> {
+                            PollComponent(
+                                question = voteState.voteData.question,
+                                option1Text = voteState.voteData.voteResult[0].text,
+                                option2Text = voteState.voteData.voteResult[1].text,
+                                pollResultData = voteState.voteData,
+                                onVote = { },
+                            )
+                        }
+
+                        is VoteState.NotCreated -> {
+                            Text(
+                                text = "생성된 투표가 없습니다.",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                textAlign = TextAlign.Center,
+                                style = defaultBokBookBokTypography.body,
+                                color = bokBookBokColors.fontLightGray
+                            )
+                        }
+
+                        is VoteState.Loading -> {
+                            CircularProgressIndicator(modifier = Modifier.padding(16.dp))
+                        }
+
+                        is VoteState.Error -> {
+                            Text(
+                                text = voteState.message,
+                                modifier = Modifier.padding(16.dp)
+                            )
+                        }
+                    }
+                }
                 reviewData.myReview?.let { myReview ->
                     item {
                         ReviewComponent(
