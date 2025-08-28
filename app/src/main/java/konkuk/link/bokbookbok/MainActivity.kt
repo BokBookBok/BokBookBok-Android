@@ -6,11 +6,17 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import konkuk.link.bokbookbok.navigation.AppNavHost
@@ -55,11 +61,7 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold(
                     containerColor = bokBookBokColors.white,
-                    modifier =
-                        Modifier
-                            .navigationBarsPadding()
-                            .fillMaxSize()
-                            .background(color = bokBookBokColors.white),
+                    modifier = Modifier.fillMaxSize(),
                     bottomBar = {
                         AnimatedVisibility(
                             visible = currentScreen?.isBottomBarVisible == true,
@@ -68,7 +70,14 @@ class MainActivity : ComponentActivity() {
                         }
                     },
                 ) { innerPadding ->
-                    AppNavHost(navController = navController, innerPadding = innerPadding)
+                    val contentPadding = PaddingValues(
+                        top = innerPadding.calculateTopPadding(),
+                        start = innerPadding.calculateStartPadding(LayoutDirection.Ltr),
+                        end = innerPadding.calculateEndPadding(LayoutDirection.Ltr),
+                        bottom = 0.dp
+                    )
+
+                    AppNavHost(navController = navController, modifier = Modifier.padding(contentPadding))
                 }
             }
         }

@@ -36,7 +36,8 @@ import java.nio.charset.StandardCharsets
 @Composable
 fun AppNavHost(
     navController: NavHostController,
-    innerPadding: PaddingValues,
+    // ▼▼▼▼▼ innerPadding 대신 modifier를 받도록 수정 ▼▼▼▼▼
+    modifier: Modifier = Modifier,
 ) {
     // repository
     val authRepository = remember { AuthRepository(RetrofitClient.publicApiService) }
@@ -47,7 +48,7 @@ fun AppNavHost(
     NavHost(
         navController = navController,
         startDestination = Screen.Splash.route,
-        modifier = Modifier.padding(innerPadding),
+        modifier = modifier,
     ) {
         composable(route = Screen.Splash.route) {
             SplashScreen(navController = navController)

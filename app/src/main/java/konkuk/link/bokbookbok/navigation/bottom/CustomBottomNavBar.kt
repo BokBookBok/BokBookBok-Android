@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -40,7 +41,10 @@ import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
 import konkuk.link.bokbookbok.util.topSemiCircleShadow
 
 @Composable
-fun CustomBottomNavBar(navController: NavController) {
+fun CustomBottomNavBar(
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
     val items =
         listOf(
             Screen.ReviewHome,
@@ -53,25 +57,26 @@ fun CustomBottomNavBar(navController: NavController) {
 
     Box(
         modifier =
-            Modifier
+            modifier
+                .background(color = bokBookBokColors.white)
                 .fillMaxWidth()
-                .height(88.dp),
+                .height(104.dp),
         contentAlignment = Alignment.TopCenter,
     ) {
         Card(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .height(64.dp)
+                    .height(90.dp)
                     .align(Alignment.BottomCenter),
             shape = RoundedCornerShape(5.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
             colors = CardDefaults.cardColors(containerColor = bokBookBokColors.white),
         ) {
             Row(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize(),
                 horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically,
             ) {
                 items.forEach { item ->
                     if (item.route == Screen.ReadingHome.route) {
@@ -106,7 +111,7 @@ fun CustomBottomNavBar(navController: NavController) {
         Box(
             modifier =
                 Modifier
-                    .offset(y = (-8).dp)
+                    .offset(y = (-7).dp)
                     .topSemiCircleShadow(elevation = 8.dp)
                     .background(color = bokBookBokColors.white, shape = CircleShape)
                     .clip(CircleShape)
@@ -143,7 +148,6 @@ fun RowScope.StandardNavItem(
                 .fillMaxHeight()
                 .clickable(onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
     ) {
         item.icon?.let {
             Icon(
@@ -151,7 +155,7 @@ fun RowScope.StandardNavItem(
                 contentDescription = item.title,
                 modifier =
                     Modifier
-                        .padding(top = 10.dp, start = 20.dp, end = 20.dp)
+                        .padding(top = 18.dp, start = 20.dp, end = 20.dp)
                         .size(24.dp),
                 tint = contentColor,
             )
