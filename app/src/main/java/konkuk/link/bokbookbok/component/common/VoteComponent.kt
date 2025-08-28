@@ -156,7 +156,7 @@ private fun PollOptionItem(
             if (isVoted) {
                 Text(
                     text = "${String.format("%.1f", percentage)}%",
-                    color = bokBookBokColors.fontDarkBrown,
+                    color = bokBookBokColors.white,
                     style = defaultBokBookBokTypography.subBody,
                 )
             } else {

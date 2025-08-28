@@ -114,7 +114,8 @@ fun ReviewScreen(
             Column(
                 modifier =
                     Modifier
-                        .padding(horizontal = 28.dp),
+                        .padding(top = 42.dp, start = 28.dp, end = 28.dp),
+                verticalArrangement = Arrangement.spacedBy(5.dp),
             ) {
                 Text(
                     text = "이번주",
@@ -208,12 +209,16 @@ fun ReviewContent(
 ) {
     if (bookReview == null) return
 
+    val finalContentPadding = PaddingValues(
+        bottom = contentPadding.calculateBottomPadding() + 120.dp
+    )
+
     LazyColumn(
         modifier =
             Modifier
                 .fillMaxSize()
-                .padding(start = 10.dp, end = 10.dp),
-        contentPadding = contentPadding,
+                .padding(top = 16.dp),
+        contentPadding = finalContentPadding,
         verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
     ) {
         bookReview.myReview?.let { myReview ->
@@ -305,7 +310,7 @@ fun VotePollComponent(
             modifier
                 .fillMaxSize()
                 .background(brush = AppGradientBrush)
-                .padding(start = 28.dp, end = 28.dp, top = 20.dp, bottom = 10.dp),
+                .padding(start = 28.dp, end = 28.dp, bottom = 100.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
