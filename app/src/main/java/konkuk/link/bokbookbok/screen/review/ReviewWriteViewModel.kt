@@ -7,7 +7,9 @@ import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import konkuk.link.bokbookbok.data.model.request.review.ReviewWriteRequest
+import konkuk.link.bokbookbok.data.model.response.reading.ReadingApiStatus
 import konkuk.link.bokbookbok.data.model.response.review.CurrentBook
+import konkuk.link.bokbookbok.data.repository.ReadingRepository
 import konkuk.link.bokbookbok.data.repository.ReviewRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -34,6 +36,7 @@ data class ReviewWriteUiState(
 
 class ReviewWriteViewModel(
     private val reviewRepository: ReviewRepository,
+    private val readingRepository: ReadingRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val bookId: Int = savedStateHandle.get<Int>("bookId") ?: -1
@@ -64,6 +67,25 @@ class ReviewWriteViewModel(
         }
     }
 
+    fun completeReview() {
+        val bookId = _uiState.value.currentBook?.id
+        if (bookId == null) {
+            _uiState.update { it.copy(postState = ReviewWritePostState.Error("책 정보가 올바르지 않습니다.")) }
+            return
+        }
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            readingRepository.patchStatus(
+                bookId = bookId,
+                status = ReadingApiStatus.REVIEWED
+            ).onSuccess {
+
+            }.onFailure { error ->
+                _uiState.update { it.copy(isLoading = false) }
+            }
+        }
+    }
+
     fun postReview(content: String) {
         val bookId = _uiState.value.currentBook?.id
         if (bookId == null) {
@@ -77,6 +99,7 @@ class ReviewWriteViewModel(
                 .postReviewWrite(request)
                 .onSuccess {
                     _uiState.update { it.copy(postState = ReviewWritePostState.Success) }
+                    completeReview()
                 }.onFailure { error ->
                     _uiState.update {
                         it.copy(postState = ReviewWritePostState.Error(error.message ?: "알 수 없는 오류가 발생했습니다."))
@@ -88,6 +111,7 @@ class ReviewWriteViewModel(
 
 class ReviewWriteViewModelFactory(
     private val reviewRepository: ReviewRepository,
+    private val readingRepository: ReadingRepository
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(
         modelClass: Class<T>,
@@ -96,7 +120,7 @@ class ReviewWriteViewModelFactory(
         if (modelClass.isAssignableFrom(ReviewWriteViewModel::class.java)) {
             val savedStateHandle = extras.createSavedStateHandle()
             @Suppress("UNCHECKED_CAST")
-            return ReviewWriteViewModel(reviewRepository, savedStateHandle) as T
+            return ReviewWriteViewModel(reviewRepository, readingRepository, savedStateHandle) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

@@ -80,7 +80,7 @@ fun AppNavHost(
             route = Screen.WriteReview.route,
             arguments = listOf(navArgument("bookId") { type = NavType.IntType }),
         ) {
-            val factory = remember { ReviewWriteViewModelFactory(reviewRepository) }
+            val factory = remember { ReviewWriteViewModelFactory(reviewRepository, readingRepository) }
             ReviewWriteScreen(
                 navController = navController,
                 factory = factory,
