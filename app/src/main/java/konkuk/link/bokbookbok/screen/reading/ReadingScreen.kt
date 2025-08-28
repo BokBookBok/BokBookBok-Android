@@ -84,7 +84,7 @@ fun ReadingScreen(
             Scaffold(
                 containerColor = bokBookBokColors.white,
                 floatingActionButton = {
-                    if (uiState.homeData?.status != ReadingApiStatus.REVIEWED) {
+                    if (uiState.homeData?.status == ReadingApiStatus.READ_COMPLETED) {
                         WriteFAB(
                             onClick = {
                                 navController.navigate(Screen.WriteReview.createRoute(bookId = uiState.homeData!!.book.id))
