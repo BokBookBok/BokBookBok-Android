@@ -3,6 +3,7 @@ package konkuk.link.bokbookbok.screen.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import konkuk.link.bokbookbok.BuildConfig
 import konkuk.link.bokbookbok.data.model.request.login.LoginRequest
 import konkuk.link.bokbookbok.data.model.response.login.LoginResponse
 import konkuk.link.bokbookbok.data.repository.AuthRepository
@@ -26,6 +27,12 @@ class LoginViewModelFactory(
     }
 }
 
+sealed interface LoginEvent {
+    object NavigateToMain : LoginEvent
+
+    object NavigateToAdmin : LoginEvent
+}
+
 class LoginViewModel(
     private val authRepository: AuthRepository,
 ) : ViewModel() {
@@ -35,8 +42,8 @@ class LoginViewModel(
     private val _loginErrorMessage = MutableStateFlow<String?>(null)
     val loginErrorMessage = _loginErrorMessage.asStateFlow()
 
-    private val _loginSuccessEvent = MutableSharedFlow<Unit>()
-    val loginSuccessEvent = _loginSuccessEvent.asSharedFlow()
+    private val _loginEvent = MutableSharedFlow<LoginEvent>()
+    val loginEvent = _loginEvent.asSharedFlow()
 
     fun login(request: LoginRequest) {
         viewModelScope.launch {
@@ -48,7 +55,11 @@ class LoginViewModel(
                     val nickname = response.nickname
                     UserManager.saveNickname(nickname)
                     _loginErrorMessage.value = null
-                    _loginSuccessEvent.emit(Unit)
+                    if (request.email == BuildConfig.ADMIN_ID && request.password == BuildConfig.ADMIN_PW) {
+                        _loginEvent.emit(LoginEvent.NavigateToAdmin)
+                    } else {
+                        _loginEvent.emit(LoginEvent.NavigateToMain)
+                    }
                 }.onFailure { error ->
                     _loginErrorMessage.value = "등록되지 않은 아이디거나 잘못 입력했습니다."
                 }

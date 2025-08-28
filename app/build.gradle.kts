@@ -25,9 +25,12 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
         val baseUrl = properties["BASE_URL"]?.toString() ?: "https://default-url.com/"
         buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+        val adminId = properties["ADMIN_ID"]?.toString() ?: ""
+        val adminPw = properties["ADMIN_PW"]?.toString() ?: ""
+        buildConfigField("String", "ADMIN_ID", "\"$adminId\"")
+        buildConfigField("String", "ADMIN_PW", "\"$adminPw\"")
     }
 
     buildTypes {
