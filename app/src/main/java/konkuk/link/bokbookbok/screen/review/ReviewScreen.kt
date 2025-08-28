@@ -228,6 +228,7 @@ fun VoteContent(
             Modifier
                 .fillMaxSize()
                 .padding(contentPadding),
+        contentAlignment = Alignment.TopCenter,
     ) {
         when (voteState) {
             is VoteState.Loading -> {

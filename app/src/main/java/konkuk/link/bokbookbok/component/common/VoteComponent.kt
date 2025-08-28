@@ -48,7 +48,9 @@ fun PollComponent(
     pollResultData: VoteResponse?,
     onVote: (option: String) -> Unit,
 ) {
-    val isVoted = pollResultData != null
+    val isVoted = pollResultData?.myVote != null
+    val myVoteOption = pollResultData?.myVote
+
     val optionA = pollResultData?.voteResult?.find { it.option == "A" }
     val optionB = pollResultData?.voteResult?.find { it.option == "B" }
 
@@ -71,7 +73,7 @@ fun PollComponent(
             text = option1Text,
             percentage = optionA?.percentage ?: 0.0,
             isVoted = isVoted,
-            isSelectedOption = true,
+            isSelectedOption = myVoteOption == "A",
             onClick = {
                 if (!isVoted) {
                     onVote("A")
@@ -83,7 +85,7 @@ fun PollComponent(
             text = option2Text,
             percentage = optionB?.percentage ?: 0.0,
             isVoted = isVoted,
-            isSelectedOption = false,
+            isSelectedOption = myVoteOption == "B",
             onClick = {
                 if (!isVoted) {
                     onVote("B")
