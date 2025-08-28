@@ -3,10 +3,10 @@ package konkuk.link.bokbookbok.screen.review
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import konkuk.link.bokbookbok.data.model.request.VoteRequest
-import konkuk.link.bokbookbok.data.model.response.BookReviewResponse
-import konkuk.link.bokbookbok.data.model.response.CurrentBook
-import konkuk.link.bokbookbok.data.model.response.VoteResponse
+import konkuk.link.bokbookbok.data.model.request.review.VoteRequest
+import konkuk.link.bokbookbok.data.model.response.review.BookReviewResponse
+import konkuk.link.bokbookbok.data.model.response.review.CurrentBook
+import konkuk.link.bokbookbok.data.model.response.review.VoteResponse
 import konkuk.link.bokbookbok.data.repository.ReviewRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow

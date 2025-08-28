@@ -1,4 +1,4 @@
-package konkuk.link.bokbookbok.data.model.response
+package konkuk.link.bokbookbok.data.model.response.review
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

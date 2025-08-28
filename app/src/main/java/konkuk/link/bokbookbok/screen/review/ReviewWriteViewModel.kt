@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import konkuk.link.bokbookbok.data.model.request.ReviewWriteRequest
-import konkuk.link.bokbookbok.data.model.response.CurrentBook
+import konkuk.link.bokbookbok.data.model.request.review.ReviewWriteRequest
+import konkuk.link.bokbookbok.data.model.response.review.CurrentBook
 import konkuk.link.bokbookbok.data.repository.ReviewRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

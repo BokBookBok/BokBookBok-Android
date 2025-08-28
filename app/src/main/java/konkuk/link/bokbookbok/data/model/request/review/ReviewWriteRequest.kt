@@ -1,4 +1,4 @@
-package konkuk.link.bokbookbok.data.model.request
+package konkuk.link.bokbookbok.data.model.request.review
 
 import kotlinx.serialization.Serializable
 

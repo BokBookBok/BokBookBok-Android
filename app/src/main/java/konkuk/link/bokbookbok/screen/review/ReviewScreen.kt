@@ -34,7 +34,7 @@ import konkuk.link.bokbookbok.component.common.PollComponent
 import konkuk.link.bokbookbok.component.common.ReviewComponent
 import konkuk.link.bokbookbok.component.common.ReviewType
 import konkuk.link.bokbookbok.component.common.WriteFAB
-import konkuk.link.bokbookbok.data.model.response.BookReviewResponse
+import konkuk.link.bokbookbok.data.model.response.review.BookReviewResponse
 import konkuk.link.bokbookbok.navigation.Screen
 import konkuk.link.bokbookbok.ui.theme.bokBookBokColors
 import konkuk.link.bokbookbok.ui.theme.defaultBokBookBokTypography
