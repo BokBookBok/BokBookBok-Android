@@ -75,10 +75,12 @@ fun ReviewScreen(
     Scaffold(
         modifier = Modifier.background(color = bokBookBokColors.white),
         floatingActionButton = {
-            if ((pagerState.currentPage == 0 && uiState.bookReview?.myReview == null) || pagerState.currentPage == 1) {
+            if (uiState.bookReview?.myReview == null) {
                 WriteFAB(
                     onClick = {
-                        navController.navigate(Screen.WriteReview.createRoute(bookId = uiState.currentBook?.id ?: 1))
+                        uiState.currentBook?.id?.let { bookId ->
+                            navController.navigate(Screen.WriteReview.createRoute(bookId = bookId))
+                        }
                     },
                 )
             }
