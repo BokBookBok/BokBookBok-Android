@@ -28,7 +28,7 @@ data class Record(
 
 @Serializable
 data class Review(
-    val id: Int,
+    val nickname: String,
     val content: String,
     val likeCount: Int,
 )
